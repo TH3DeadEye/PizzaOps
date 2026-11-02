@@ -1,0 +1,3 @@
+rootProject.name = 'pizzaops'
+
+include 'inventory-service', 'order-service'
