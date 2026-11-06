@@ -1,0 +1,1530 @@
+{
+  "schema_version": 1,
+  "size": [
+    12,
+    12
+  ],
+  "tile_size": [
+    64,
+    32
+  ],
+  "origin": [
+    414,
+    152
+  ],
+  "floors": [
+    {
+      "position": [
+        0,
+        0
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        1
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        2
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        3
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        4
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        5
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        6
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        7
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        8
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        9
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        10
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        0,
+        11
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        0
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        1
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        2
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        3
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        4
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        5
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        6
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        7
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        8
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        9
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        10
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        1,
+        11
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        0
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        1
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        2
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        3
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        4
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        5
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        6
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        7
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        8
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        9
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        10
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        2,
+        11
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        0
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        1
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        2
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        3
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        4
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        5
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        6
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        7
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        8
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        9
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        10
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        3,
+        11
+      ],
+      "sprite": "floor_checker"
+    },
+    {
+      "position": [
+        4,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        4,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        5,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        6,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        7,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        8,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        9,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        10,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        0
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        1
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        2
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        3
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        4
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        5
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        6
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        7
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        8
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        9
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        10
+      ],
+      "sprite": "floor_terracotta"
+    },
+    {
+      "position": [
+        11,
+        11
+      ],
+      "sprite": "floor_terracotta"
+    }
+  ],
+  "objects": [
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        1
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        2
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        3
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        4
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        5
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        6
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        7
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        8
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        9
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        10
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_brick_nw",
+      "position": [
+        0,
+        11
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        1,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        2,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        3,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        4,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        5,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        6,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        7,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        8,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        9,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        10,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        11,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "corner_inner",
+      "position": [
+        0,
+        0
+      ],
+      "layer": "back"
+    },
+    {
+      "sprite": "oven_lit_0",
+      "position": [
+        1.4,
+        2
+      ],
+      "animation": "oven/lit"
+    },
+    {
+      "sprite": "prep_counter",
+      "position": [
+        1.4,
+        4.2
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "topping_station",
+      "position": [
+        1.4,
+        6.1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "sink_counter",
+      "position": [
+        1.4,
+        8.1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "storage_shelf",
+      "position": [
+        3.5,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "fridge",
+      "position": [
+        5.2,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "crate_tomatoes",
+      "position": [
+        7.2,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "crate_cheese",
+      "position": [
+        8.4,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "crate_flour",
+      "position": [
+        9.6,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "service_counter",
+      "position": [
+        4.6,
+        5.2
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "pizza_display",
+      "position": [
+        4.6,
+        7.2
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "table_square",
+      "position": [
+        7.5,
+        4.3
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "table_round",
+      "position": [
+        9.5,
+        7.5
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "chair_sw",
+      "position": [
+        8.5,
+        4.3
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "chair_se",
+      "position": [
+        7.5,
+        5.4
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "chair_se",
+      "position": [
+        9.5,
+        8.6
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "chair_sw",
+      "position": [
+        10.6,
+        7.5
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "booth",
+      "position": [
+        9,
+        2
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "olive_tree",
+      "position": [
+        11,
+        1
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "floor_lamp",
+      "position": [
+        6.2,
+        2
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "plant",
+      "position": [
+        10.8,
+        10.5
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "menu_stand",
+      "position": [
+        5.5,
+        10.7
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "trash_bin",
+      "position": [
+        0.8,
+        10.7
+      ],
+      "animation": null
+    },
+    {
+      "sprite": "register",
+      "position": [
+        4.6,
+        5.2
+      ],
+      "elevation": 34,
+      "depth_bias": 0.01
+    },
+    {
+      "sprite": "pizza_pepperoni",
+      "position": [
+        7.5,
+        4.3
+      ],
+      "elevation": 33,
+      "depth_bias": 0.01
+    },
+    {
+      "sprite": "rug",
+      "position": [
+        6.8,
+        9.4
+      ],
+      "layer": "ground"
+    },
+    {
+      "sprite": "window",
+      "position": [
+        0.2,
+        5.7
+      ],
+      "elevation": 35,
+      "layer": "back"
+    },
+    {
+      "sprite": "menu_board",
+      "position": [
+        6.5,
+        0.1
+      ],
+      "elevation": 32,
+      "layer": "back"
+    },
+    {
+      "sprite": "wall_clock",
+      "position": [
+        3,
+        0.1
+      ],
+      "elevation": 49,
+      "layer": "back"
+    }
+  ],
+  "characters": [
+    {
+      "character": "chef",
+      "position": [
+        2.8,
+        3.7
+      ],
+      "action": "work",
+      "direction": "sw"
+    },
+    {
+      "character": "cashier",
+      "position": [
+        3.4,
+        5.2
+      ],
+      "action": "talk",
+      "direction": "se"
+    },
+    {
+      "character": "stock_worker",
+      "position": [
+        6.5,
+        1.7
+      ],
+      "action": "work",
+      "direction": "se"
+    },
+    {
+      "character": "customer_amber",
+      "position": [
+        5.7,
+        5.3
+      ],
+      "action": "idle",
+      "direction": "sw"
+    },
+    {
+      "character": "customer_teal",
+      "position": [
+        8.1,
+        7.4
+      ],
+      "action": "talk",
+      "direction": "se"
+    },
+    {
+      "character": "customer_lavender",
+      "position": [
+        3.2,
+        9.4
+      ],
+      "action": "walk",
+      "direction": "se",
+      "route": [
+        [
+          3.2,
+          9.4
+        ],
+        [
+          8.6,
+          9.4
+        ],
+        [
+          8.6,
+          10.5
+        ],
+        [
+          3.2,
+          10.5
+        ]
+      ]
+    }
+  ]
+}

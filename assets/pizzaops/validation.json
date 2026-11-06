@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "sprites": 367,
+  "animations": 85,
+  "atlases": 7,
+  "categories": {
+    "kitchen": 16,
+    "dining": 16,
+    "items": 16,
+    "characters": 288,
+    "tiles": 5,
+    "architecture": 10,
+    "ui": 16
+  },
+  "checks": [
+    "RGBA binary alpha",
+    "individual PNG inventory",
+    "dimensions",
+    "anchors and feet registration",
+    "character clipping",
+    "frame duration counts",
+    "visible animation changes",
+    "atlas pixel equality",
+    "strip pixel equality",
+    "scene references and bounds"
+  ]
+}
