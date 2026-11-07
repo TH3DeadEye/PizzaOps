@@ -1,6 +1,6 @@
 # PizzaOps proposed API contracts
 
-Status: 2026-11-06. Inventory and Kitchen are implemented against this sheet (`services/inventory`, `services/kitchen`); Order is next. Read alongside ARCHITECTURE.md. These choices resolve the open decisions in PROJECT_GUIDE.md; the synchronous cooking response described there is superseded here. Where the implementation refined a detail, this document records the refinement.
+Status: 2026-11-06. All three services are implemented against this sheet (`services/inventory`, `services/kitchen`, `services/order`); the P0 acceptance test (`tests/test_p0_acceptance.py`) drives them as three real processes. Read alongside ARCHITECTURE.md. These choices resolve the open decisions in PROJECT_GUIDE.md; the synchronous cooking response described there is superseded here. Where the implementation refined a detail, this document records the refinement.
 
 ## Common rules
 
@@ -30,27 +30,47 @@ Status: 2026-11-06. Inventory and Kitchen are implemented against this sheet (`s
 
 Traits initially: `patient`, `impatient`, `chatty`; appearances: the three supplied customer asset IDs. Traits affect authored dialogue and arrival generation, not inventory correctness. Use the full normalized customer/order payload when computing the request fingerprint.
 
-New order: `201`, `Location: /orders/{orderId}`:
+New order: `201`, `Location: /orders/{orderId}`, body = the full order record (the same shape `GET /orders/{orderId}` returns):
 
 ```json
 {
   "orderId": "uuid",
   "requestId": "uuid",
+  "customer": {"id": "uuid", "appearance": "customer_amber", "trait": "patient"},
+  "pizzaType": "CHEESE",
+  "quantity": 2,
   "status": "RECEIVED",
   "failureReason": null,
   "lastError": null,
+  "jobId": null,
+  "kitchenStatus": null,
+  "kitchenInstanceId": null,
+  "reservationId": null,
+  "attempts": [],
+  "sequence": 1,
+  "version": 1,
   "traceId": "uuid",
-  "version": 1
+  "createdAt": "2026-11-06T23:00:00.000Z",
+  "updatedAt": "2026-11-06T23:00:00.000Z",
+  "completedAt": null
 }
 ```
 
-Duplicate identical request: `200`, current original order, original trace ID, no new queue entry. Conflicting payload under the same key: 409. Queue full: 503 `QUEUE_FULL` plus `Retry-After`, with no accepted order. Validation, duplicate lookup, admission, order creation, and RECEIVED event must have a coherent atomic boundary.
+Duplicate identical request: `200`, current original order, original trace ID, no new queue entry. Conflicting payload under the same key: 409 `IDEMPOTENCY_CONFLICT` with `details.orderId`. Queue full: 503 `QUEUE_FULL` plus `Retry-After: 1`, with no accepted order. While the service is draining for shutdown, new orders get 503 `ORDER_UNAVAILABLE`. Validation, duplicate lookup, admission, order creation, and RECEIVED event happen under one lock, so a rejected request leaves no record and no event.
+
+Order owns the menu (`ORDER_MENU`, default `CHEESE,PEPPERONI,MARINARA`): a pizza that is not on it is 400 `UNKNOWN_PIZZA` at admission. Kitchen owns the recipes; if the two ever disagree, Kitchen's 400 surfaces as a FAILED order with reason `UNKNOWN_PIZZA`.
 
 ### GET /orders/{orderId}; GET /orders
 
-Return the order's identifying fields, customer, pizza, quantity, status, failure reason, last observed error, version, and timestamps. List uses `limit` (1–100, default 50) plus an opaque cursor for pagination. Unknown order: 404 `ORDER_NOT_FOUND`.
+Return the order's identifying fields, customer, pizza, quantity, status, failure reason, last observed error, Kitchen evidence (`jobId`, `kitchenStatus`, `kitchenInstanceId`, `reservationId`), attempt history, version, and timestamps. List uses `limit` (1–100, default 50) plus an opaque cursor for pagination and returns `{orders, nextCursor}` newest first; `nextCursor` is null on the last page and a malformed cursor is 400 `INVALID_CURSOR`. Unknown order: 404 `ORDER_NOT_FOUND`.
 
 States: `RECEIVED`, `CHECKING`, `COOKING`, `RECONCILING`, `READY`, `FAILED`, `UNKNOWN`. READY requires confirmed Kitchen COOKED. FAILED requires a known rejection or unsuccessful cooking outcome. UNKNOWN carries `lastError` and an unresolved-outcome explanation; it must not be counted as FAILED. READY and known FAILED records are terminal. UNKNOWN may later re-enter RECONCILING when new evidence is available. CHECKING may transition directly to READY if polling missed COOKING; never synthesize a cooking delay after confirmed completion.
+
+Legal transitions, enforced in code: RECEIVED → CHECKING, FAILED; CHECKING → COOKING, READY, FAILED, RECONCILING, UNKNOWN; COOKING → READY, FAILED, RECONCILING, UNKNOWN; RECONCILING → CHECKING, COOKING, READY, FAILED, UNKNOWN; UNKNOWN → RECONCILING. Every transition increments `version` and emits exactly one `ORDER_*` event carrying the full record.
+
+`failureReason` vocabulary. FAILED: `INSUFFICIENT_STOCK`, `RECIPE_CONFIGURATION_ERROR` and `INVENTORY_UNAVAILABLE` pass through from a FAILED Kitchen job (Kitchen's error is kept under `lastError.details.jobError`; a job that failed without a reason becomes `KITCHEN_FAILED`); `KITCHEN_QUEUE_FULL` and `KITCHEN_UNAVAILABLE` mean Kitchen never accepted the job (one retry after `ORDER_RETRY_BACKOFF_S`, then the known failure); `UNKNOWN_PIZZA` is Kitchen's 400 at submission; `COOK_CONFLICT` means Kitchen already holds a different job under this order ID; `DEPENDENCY_RUN_MISMATCH` means Kitchen belongs to another run; `KITCHEN_REJECTED` is any other 4xx. UNKNOWN: `DEPENDENCY_STATE_LOST` (Kitchen instance changed while an outcome was pending, including a Kitchen that forgot a job it was observed cooking) and `FULFILLMENT_UNCONFIRMED` (the reconciliation or observation window closed without a confirmed outcome, or Kitchen knowingly refused the reconciling lookup; `lastError` keeps the last error seen and, for observation, `details.lastKitchenStatus`). Kitchen's own UNKNOWN job becomes an UNKNOWN order with the same reason.
+
+Observation: after acceptance Order polls `GET /cook/{orderId}` every `ORDER_POLL_INTERVAL_S` (0.1 s) for at most `ORDER_OBSERVE_TIMEOUT_S` (60 s). A lost `POST /cook` response is reconciled through the same lookup; nothing found on the same Kitchen instance means resubmission under the same order ID, as in the table at the end of this document.
 
 ## Kitchen — :8081
 
@@ -178,6 +198,8 @@ Starting event catalog:
 | Each service | DEPENDENCY_TIMEOUT, DEPENDENCY_UNAVAILABLE, SERVICE_STARTED, SERVICE_STOPPING |
 
 Every event type needs a concrete payload schema before its implementation milestone is complete. Use enums/typed models and contract tests, not unvalidated arbitrary event dictionaries.
+
+Order payloads as implemented: every `ORDER_*` event carries the full order record (entity = order ID, entity version = order version); `DEPENDENCY_TIMEOUT` and `DEPENDENCY_UNAVAILABLE` follow the Kitchen shape below with `operation` = `submit` or `lookup`.
 
 Kitchen payloads as implemented: every `COOK_*` event carries the full job record (entity = order ID, entity version = job version). `COOK_CHECKING` is the worker picking the job up; `COOK_STARTED` means the reservation is confirmed and the oven is on. `STOCK_CHECKED` is Kitchen's reading of Inventory's answer (`authoritative` requested, `source`, `sufficient`, `needed`, `available`, `missing`, `stockVersion`, `snapshotVersion`). `DEPENDENCY_TIMEOUT` covers every ambiguous loss (read timeout, broken connection, unexpected 5xx) and `DEPENDENCY_UNAVAILABLE` every known non-delivery (connection refused, connect timeout, 503); both carry `operation`, `attempt`, `code`, `message`, `status`. `MOOD_CHANGED` and `RELATIONSHIP_CHANGED` carry `before` and `after` mood states (entity `mood`, version = mood version) and, when an order triggered them, its order ID.
 

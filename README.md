@@ -20,24 +20,28 @@ The viewer currently demonstrates artwork and movement only; it does not read se
 
 ## Run the services
 
-Inventory (8082) and Kitchen (8081) exist so far; see `ARCHITECTURE.md` for the plan and `CONTRACTS.md` for the API. All services of one simulation must share a run ID, and every business request carries it as `X-Run-Id`:
+Order (8080), Kitchen (8081) and Inventory (8082) are three separate processes that talk only over HTTP; see `ARCHITECTURE.md` for the plan and `CONTRACTS.md` for the API. All services of one simulation must share a run ID, and every business request carries it as `X-Run-Id`. One terminal per service:
 
 ```sh
-export PIZZAOPS_RUN_ID=$(uuidgen | tr A-Z a-z)
+export PIZZAOPS_RUN_ID=$(uuidgen | tr A-Z a-z)                                # same value in every terminal
 uv run uvicorn services.inventory.main:app --host 127.0.0.1 --port 8082
-uv run uvicorn services.kitchen.main:app --host 127.0.0.1 --port 8081      # second terminal, same PIZZAOPS_RUN_ID
+KITCHEN_INVENTORY_URL=http://127.0.0.1:8082 uv run uvicorn services.kitchen.main:app --host 127.0.0.1 --port 8081
+ORDER_KITCHEN_URL=http://127.0.0.1:8081 uv run uvicorn services.order.main:app --host 127.0.0.1 --port 8080
 ```
+
+Place an order and watch it travel:
 
 ```sh
 H=(-H "X-Run-Id: $PIZZAOPS_RUN_ID" -H "Content-Type: application/json")
-ORDER=$(uuidgen | tr A-Z a-z)
-curl -s "${H[@]}" -d "{\"orderId\":\"$ORDER\",\"pizzaType\":\"PEPPERONI\",\"quantity\":2}" http://127.0.0.1:8081/cook
-curl -s "${H[@]}" http://127.0.0.1:8081/cook/$ORDER | jq '{status, failureReason, reservationId}'
+REQ=$(uuidgen | tr A-Z a-z); WHO=$(uuidgen | tr A-Z a-z)
+ORDER=$(curl -s "${H[@]}" -d "{\"requestId\":\"$REQ\",\"customer\":{\"id\":\"$WHO\",\"appearance\":\"customer_amber\",\"trait\":\"patient\"},\"pizzaType\":\"PEPPERONI\",\"quantity\":2}" http://127.0.0.1:8080/orders | jq -r .orderId)
+curl -s "${H[@]}" http://127.0.0.1:8080/orders/$ORDER | jq '{status, failureReason, kitchenStatus, reservationId, traceId}'
+curl -s "${H[@]}" http://127.0.0.1:8081/cook/$ORDER | jq '{status, items}'
 curl -s "${H[@]}" http://127.0.0.1:8082/stock | jq .items
 curl -s "${H[@]}" http://127.0.0.1:8081/mood
 ```
 
-Each service prints one JSON line per event; `grep <traceId>` across the two outputs follows one order through both. Settings are environment variables (`KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`.
+The order is `RECEIVED` at once and `READY` a few seconds later (Kitchen cooks for `KITCHEN_COOKING_S`, default 3 s). Repeating the same `POST` returns the same order with `200`; stopping Kitchen makes the next order `FAILED` with `KITCHEN_UNAVAILABLE` instead of hanging. Each service prints one JSON line per event; `grep <traceId>` across the three outputs follows one order through all of them. Settings are environment variables (`ORDER_KITCHEN_URL`, `ORDER_MENU`, `ORDER_WORKERS`, `KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`; `tests/test_p0_acceptance.py` starts all three services as real processes.
 
 ## Run the standalone ZIP
 
