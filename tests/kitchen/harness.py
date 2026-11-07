@@ -66,6 +66,8 @@ class ScriptedTransport(httpx.AsyncBaseTransport):
         mode = self._next_mode(request)
         if callable(mode):
             mode = await mode()
+        if isinstance(mode, httpx.Response):
+            return mode
         if mode == "refuse":
             raise httpx.ConnectError("connection refused", request=request)
         if mode == "lose_request":
