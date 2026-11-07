@@ -1,6 +1,6 @@
 # PizzaOps service architecture and build plan
 
-Status: proposed implementation plan, 2026-11-06. This change adds planning documents only. The backend is not implemented yet.
+Status: implementation plan, 2026-11-06. Stages 0 to 2 are done (architecture, Inventory, Kitchen); see the milestone table in section 8. The Order service, observer, autopilot and fault/mood polish are still to do.
 
 ## 1. Starting point and target
 
@@ -170,9 +170,9 @@ Use `create_app(settings)` and dependency injection for service-local stores, cl
 
 | Stage | Branch | Deliverable | Completion evidence |
 | --- | --- | --- | --- |
-| 0 | `docs/service-architecture` | Architecture and API contracts | Endpoint shapes, lifecycle, retry behavior, and deviations from the guide documented |
-| 1 | `feat/inventory-service` | Health, stock, restock, atomic reservation, lookup, journal | Twelve competing reservations for three units yield exactly three successes; concurrent duplicates deduct once; mixed valid/invalid items deduct nothing |
-| 2 | `feat/kitchen-service` | Recipe expansion, async jobs, two workers, Inventory client | Correct stock usage, known shortage, queue rejection, repeated submission, lost reservation response reconciled |
+| 0 ✓ | `docs/service-architecture` | Architecture and API contracts | Endpoint shapes, lifecycle, retry behavior, and deviations from the guide documented |
+| 1 ✓ | `feat/inventory-service` | Health, stock, restock, atomic reservation, lookup, journal | Twelve competing reservations for three units yield exactly three successes; concurrent duplicates deduct once; mixed valid/invalid items deduct nothing (`tests/inventory`) |
+| 2 ✓ | `feat/kitchen-service` | Recipe expansion, async jobs, two workers, Inventory client, mood state, reconciliation | Correct stock usage, known shortage, queue rejection, repeated submission, lost reservation response reconciled without double deduction, lost request resubmitted under the same key, Inventory restart reported as `DEPENDENCY_STATE_LOST`, exhausted reconciliation reported as `FULFILLMENT_UNCONFIRMED`, one confirmed stale read makes the next order ask for authoritative stock (`tests/kitchen`, including a two-process HTTP test) |
 | 3 | `feat/order-service` | Async order admission, status tracking, trace propagation | Real HTTP across all three processes reaches READY; shortage reaches FAILED; lost job response never causes duplicate cooking |
 | 4 | `feat/live-observer` | Snapshot/event polling, reconnects, sprite reactions | Manual order visibly triggers real actions; duplicate events, cursor expiry, and disconnection do not corrupt the scene |
 | 5 | `feat/autopilot-scenarios` | Seeded customers, restocking, recording, playback | An unattended normal shift and a shortage/recovery scenario run; recorded events can be replayed |

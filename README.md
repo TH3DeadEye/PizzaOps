@@ -16,7 +16,28 @@ Or use the existing environment directly:
 .venv/bin/python -m viewer.main
 ```
 
-The existing root `main.py` remains the FastAPI entry point. The viewer currently demonstrates artwork and movement only; it does not read service events or claim that any orders have completed.
+The viewer currently demonstrates artwork and movement only; it does not read service events or claim that any orders have completed.
+
+## Run the services
+
+Inventory (8082) and Kitchen (8081) exist so far; see `ARCHITECTURE.md` for the plan and `CONTRACTS.md` for the API. All services of one simulation must share a run ID, and every business request carries it as `X-Run-Id`:
+
+```sh
+export PIZZAOPS_RUN_ID=$(uuidgen | tr A-Z a-z)
+uv run uvicorn services.inventory.main:app --host 127.0.0.1 --port 8082
+uv run uvicorn services.kitchen.main:app --host 127.0.0.1 --port 8081      # second terminal, same PIZZAOPS_RUN_ID
+```
+
+```sh
+H=(-H "X-Run-Id: $PIZZAOPS_RUN_ID" -H "Content-Type: application/json")
+ORDER=$(uuidgen | tr A-Z a-z)
+curl -s "${H[@]}" -d "{\"orderId\":\"$ORDER\",\"pizzaType\":\"PEPPERONI\",\"quantity\":2}" http://127.0.0.1:8081/cook
+curl -s "${H[@]}" http://127.0.0.1:8081/cook/$ORDER | jq '{status, failureReason, reservationId}'
+curl -s "${H[@]}" http://127.0.0.1:8082/stock | jq .items
+curl -s "${H[@]}" http://127.0.0.1:8081/mood
+```
+
+Each service prints one JSON line per event; `grep <traceId>` across the two outputs follows one order through both. Settings are environment variables (`KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`.
 
 ## Run the standalone ZIP
 

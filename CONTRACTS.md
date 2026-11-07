@@ -1,6 +1,6 @@
 # PizzaOps proposed API contracts
 
-Status: planning specification, 2026-11-06. Not implemented. Read alongside ARCHITECTURE.md. These choices resolve the open decisions in PROJECT_GUIDE.md; the synchronous cooking response described there is superseded in this proposal.
+Status: 2026-11-06. Inventory and Kitchen are implemented against this sheet (`services/inventory`, `services/kitchen`); Order is next. Read alongside ARCHITECTURE.md. These choices resolve the open decisions in PROJECT_GUIDE.md; the synchronous cooking response described there is superseded here. Where the implementation refined a detail, this document records the refinement.
 
 ## Common rules
 
@@ -66,19 +66,39 @@ New job: `202`, `Location: /cook/{orderId}`:
 {"jobId": "uuid", "orderId": "uuid", "status": "QUEUED", "result": null, "failureReason": null, "version": 1, "traceId": "uuid"}
 ```
 
-Duplicate identical job: 200 with its current record, even when completed. Conflicting payload: 409. Queue full or explicitly unavailable before acceptance: 503 with no job created. A trace is correlation metadata, not the idempotency key.
+Duplicate identical job: 200 with its current record, even when completed. Conflicting payload: 409 `IDEMPOTENCY_CONFLICT`. Unknown pizza: 400 `UNKNOWN_PIZZA`; quantity above the configured limit (default 20): 400 `INVALID_REQUEST`. Queue full: 503 `QUEUE_FULL` with `Retry-After`; not accepting (shutting down): 503 `KITCHEN_UNAVAILABLE`. Neither 503 creates a job. A trace is correlation metadata, not the idempotency key.
+
+As implemented, both the 202 and the 200 return the full job record (the same shape as `GET /cook/{orderId}`), so a caller never needs a second request to learn the deadline or the expanded `items`.
 
 ### GET /cook/{orderId}
 
-Returns current job including `reservationId`, `deadlineAt`, `lastError`, and nullable `startedAt` and `completedAt` timestamps. Job states: `QUEUED`, `CHECKING`, `COOKING`, `COOKED`, `FAILED`, `RECONCILING`, `UNKNOWN`. A returned job with a business failure still uses HTTP 200; failure is recorded in its status and reason. The POST's 202 never means the pizza is ready. A nonexistent job returns 404 `COOK_JOB_NOT_FOUND`.
+Returns the current job: `jobId`, `orderId`, `pizzaType`, `quantity`, `items` (the expanded recipe), `status`, `result`, `failureReason`, `lastError`, `reservationId`, `inventoryInstanceId`, `attempts`, `version`, `traceId`, `createdAt`, `updatedAt`, `deadlineAt`, and nullable `startedAt` and `completedAt`. Job states: `QUEUED`, `CHECKING`, `COOKING`, `COOKED`, `FAILED`, `RECONCILING`, `UNKNOWN`. A returned job with a business failure still uses HTTP 200; failure is recorded in its status and reason. The POST's 202 never means the pizza is ready. A nonexistent job returns 404 `COOK_JOB_NOT_FOUND`.
+
+`attempts` is the whole history of Inventory calls for the job (`operation` ∈ stock, reserve, lookup; `outcome` such as `SUFFICIENT`, `RESERVED`, `TIMEOUT`, `NOT_FOUND`, `FOUND`, `INSUFFICIENT_STOCK`), so a rejection that followed an earlier ambiguous attempt stays visible. `lastError` is the last error observed even when the job later succeeded. `inventoryInstanceId` is the Inventory instance the job's reservation evidence belongs to.
+
+Job processing: a worker takes a QUEUED job, refuses to start if the deadline (default 15 s, including queue time) has passed, moves it to CHECKING, reads stock (`authoritative=true` when trust is below 50), reserves the full recipe, moves it to COOKING once Inventory confirmed the allocation, sleeps the configured cooking time (default 0.25 s), and records COOKED. The stock read is informational: Kitchen always lets the reservation decide, because a cached "not enough" could be as wrong as a cached "plenty".
+
+Kitchen `failureReason` values: `INSUFFICIENT_STOCK`, `RECIPE_CONFIGURATION_ERROR` (Inventory 404 `UNKNOWN_INGREDIENT` for a known recipe), `RESERVATION_CONFLICT` (Inventory `IDEMPOTENCY_CONFLICT`), `DEPENDENCY_RUN_MISMATCH`, `INVENTORY_REJECTED` (any other 4xx), `INVENTORY_UNAVAILABLE` (connection refused, connect timeout or Inventory 503, after one retry), `COOK_DEADLINE_EXCEEDED` (deadline passed before any mutation was attempted). The same field carries the unresolved reason of an UNKNOWN job: `DEPENDENCY_STATE_LOST`, `FULFILLMENT_UNCONFIRMED`, `KITCHEN_INTERNAL_ERROR`.
 
 When Order receives a missing-job response after a lost submission response, it may resubmit the original payload with the same key only in the same Kitchen instance. If Kitchen restarted, reconcile with the available surviving evidence or report state loss; do not assume nothing previously happened.
 
 ### GET /mood; POST /admin/reconcile
 
-Mood returns `{patience, stress, trust, failedReservationCount, mood, version}`. Initial patience 85, trust 60, stress 0; values clamped to 0–100. One confirmed stale-stock contradiction: trust -25, patience -10. Successful reservation: trust +5. Trust below 50 requests authoritative stock.
+Mood returns `{patience, stress, trust, failedReservationCount, mood, version}`. Initial patience 85, trust 60, stress 0; values clamped to 0–100. The `mood` label is derived: `FURIOUS` when patience < 25, else `SUSPICIOUS` when trust < 50, else `TENSE` when patience < 60 or stress ≥ 50, else `CALM`. Trust below 50 requests authoritative stock.
 
-Reconcile is a personality recovery command with a stable `commandId`. Repeating it is deduplicated; it changes mood only, never stock or an order result. Define cooldown and recovery increments in configuration and record each adjustment.
+Implemented transitions (each emits one `MOOD_CHANGED` with `before`, `after` and a `reason`, only when a value actually changed):
+
+| Event | Patience | Trust | Stress | failedReservationCount |
+| --- | --- | --- | --- | --- |
+| Reservation succeeded | | +5 | -5 | |
+| Shortage (plain) | | | +10 | +1 |
+| Confirmed stale-stock contradiction (emits `RELATIONSHIP_CHANGED` instead) | -10 | -25 | +15 | +1 |
+| Dependency timeout or unavailability (each occurrence) | -5 | | +10 | |
+| Reconcile command | +15 | +10 | -20 | |
+
+A contradiction is confirmed only when the stock read said `source: CACHED` with enough of every ingredient, and the reservation was rejected with `INSUFFICIENT_STOCK` at the same `stockVersion` the read reported. If the version moved between the read and the reservation, someone else may have taken the ingredients; that is a shortage, not a lie, and trust is untouched. Patience-driven unavailability (simulated 503 below 25) and quiet-time recovery are not wired yet; see ARCHITECTURE.md stage 6.
+
+Reconcile is a personality recovery command with a stable `commandId` and no other payload. Repeating it returns the first response; it changes mood only, never stock or an order result. The increments are configuration (`reconcile_patience`, `reconcile_trust`).
 
 ## Inventory — :8082
 
@@ -153,11 +173,13 @@ Starting event catalog:
 | Owner | Events |
 | --- | --- |
 | Order | ORDER_RECEIVED, ORDER_CHECKING, ORDER_COOKING, ORDER_RECONCILING, ORDER_READY, ORDER_FAILED, ORDER_UNKNOWN |
-| Kitchen | COOK_QUEUED, COOK_STARTED, COOK_COMPLETED, COOK_FAILED, COOK_RECONCILING, COOK_UNKNOWN, RELATIONSHIP_CHANGED, MOOD_CHANGED |
+| Kitchen | COOK_QUEUED, COOK_CHECKING, STOCK_CHECKED, COOK_STARTED, COOK_COMPLETED, COOK_FAILED, COOK_RECONCILING, COOK_UNKNOWN, RELATIONSHIP_CHANGED, MOOD_CHANGED |
 | Inventory | STOCK_READ, RESERVATION_SUCCEEDED, RESERVATION_REJECTED, STOCK_RESTOCKED, FAULT_CONFIG_CHANGED |
 | Each service | DEPENDENCY_TIMEOUT, DEPENDENCY_UNAVAILABLE, SERVICE_STARTED, SERVICE_STOPPING |
 
 Every event type needs a concrete payload schema before its implementation milestone is complete. Use enums/typed models and contract tests, not unvalidated arbitrary event dictionaries.
+
+Kitchen payloads as implemented: every `COOK_*` event carries the full job record (entity = order ID, entity version = job version). `COOK_CHECKING` is the worker picking the job up; `COOK_STARTED` means the reservation is confirmed and the oven is on. `STOCK_CHECKED` is Kitchen's reading of Inventory's answer (`authoritative` requested, `source`, `sufficient`, `needed`, `available`, `missing`, `stockVersion`, `snapshotVersion`). `DEPENDENCY_TIMEOUT` covers every ambiguous loss (read timeout, broken connection, unexpected 5xx) and `DEPENDENCY_UNAVAILABLE` every known non-delivery (connection refused, connect timeout, 503); both carry `operation`, `attempt`, `code`, `message`, `status`. `MOOD_CHANGED` and `RELATIONSHIP_CHANGED` carry `before` and `after` mood states (entity `mood`, version = mood version) and, when an order triggered them, its order ID.
 
 ## Failure mapping and reconciliation
 
@@ -169,6 +191,7 @@ Every event type needs a concrete payload schema before its implementation miles
 | Inventory rejects before mutation with a known 503 | Kitchen retries within policy; known nonallocation failure may become FAILED / INVENTORY_UNAVAILABLE |
 | Dependency response lost or timeout after possible acceptance | Look up the original key; RECONCILING, not immediate definitive failure |
 | Original record found | Resume its state or confirmed final result, never repeat a side effect with a new key |
+| Lookup finds nothing and the dependency instance is unchanged | Resubmit the identical request under the same key (the dependency serializes duplicates), unless the job deadline has passed, in which case keep looking up only |
 | Service instance changed and evidence lost | UNKNOWN / DEPENDENCY_STATE_LOST; no invented failure or automatic reallocation |
 | Reconciliation budget exhausted | UNKNOWN / FULFILLMENT_UNCONFIRMED; preserve last timeout/error and any confirmed reservation |
 
