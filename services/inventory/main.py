@@ -19,7 +19,7 @@ from services.inventory.trace import read_trace
 
 async def require_run(request: Request, run_id: Annotated[UUID, Header(alias="X-Run-Id")],
                       trace_id: Annotated[UUID | None, Header(alias="X-Trace-Id")] = None):
-    store = request.app.state.inventory
+    store = request.state.inventory
     if run_id != store.settings.run_id:
         raise InventoryError(409, "RUN_MISMATCH", "Request belongs to a different simulation run",
                              {"runId": str(store.settings.run_id)})
@@ -48,6 +48,7 @@ def create_app(settings=None, *, store_factory=InventoryStore):
 
     @application.middleware("http")
     async def correlation(request, call_next):
+        request.state.inventory = request.app.state.inventory
         request.state.trace_id = uuid4()
         try:
             request.state.trace_id = read_trace(request.headers.get("X-Trace-Id"))
@@ -59,7 +60,7 @@ def create_app(settings=None, *, store_factory=InventoryStore):
             response = InventoryError(500, "INTERNAL_ERROR", "Inventory could not complete the request").response(request.state.trace_id)
         response.headers["X-Trace-Id"] = str(request.state.trace_id)
         response.headers["X-Run-Id"] = str(settings.run_id)
-        response.headers["X-Instance-Id"] = str(request.app.state.inventory.instance_id)
+        response.headers["X-Instance-Id"] = str(request.state.inventory.instance_id)
         return response
 
     @application.exception_handler(InventoryError)
@@ -82,7 +83,7 @@ def create_app(settings=None, *, store_factory=InventoryStore):
 
     @application.get("/health", response_model=HealthResponse)
     async def health(request: Request):
-        store = request.app.state.inventory
+        store = request.state.inventory
         return HealthResponse(run_id=settings.run_id, instance_id=store.instance_id)
 
     router = APIRouter(responses={status: {"model": ErrorResponse} for status in (400, 404, 409, 410, 503)})

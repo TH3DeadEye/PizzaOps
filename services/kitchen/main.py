@@ -19,7 +19,7 @@ from services.kitchen.trace import read_trace
 
 async def require_run(request: Request, run_id: Annotated[UUID, Header(alias="X-Run-Id")],
                       trace_id: Annotated[UUID | None, Header(alias="X-Trace-Id")] = None):
-    kitchen = request.app.state.kitchen
+    kitchen = request.state.kitchen
     if run_id != kitchen.settings.run_id:
         raise KitchenError(409, "RUN_MISMATCH", "Request belongs to a different simulation run",
                            {"runId": str(kitchen.settings.run_id)})
@@ -52,6 +52,7 @@ def create_app(settings=None, *, kitchen_factory=default_kitchen):
 
     @application.middleware("http")
     async def correlation(request, call_next):
+        request.state.kitchen = request.app.state.kitchen
         request.state.trace_id = uuid4()
         try:
             request.state.trace_id = read_trace(request.headers.get("X-Trace-Id"))
@@ -63,7 +64,7 @@ def create_app(settings=None, *, kitchen_factory=default_kitchen):
             response = KitchenError(500, "INTERNAL_ERROR", "Kitchen could not complete the request").response(request.state.trace_id)
         response.headers["X-Trace-Id"] = str(request.state.trace_id)
         response.headers["X-Run-Id"] = str(settings.run_id)
-        response.headers["X-Instance-Id"] = str(request.app.state.kitchen.instance_id)
+        response.headers["X-Instance-Id"] = str(request.state.kitchen.instance_id)
         return response
 
     @application.exception_handler(KitchenError)
@@ -86,7 +87,7 @@ def create_app(settings=None, *, kitchen_factory=default_kitchen):
 
     @application.get("/health", response_model=HealthResponse)
     async def health(request: Request):
-        return HealthResponse(run_id=settings.run_id, instance_id=request.app.state.kitchen.instance_id)
+        return HealthResponse(run_id=settings.run_id, instance_id=request.state.kitchen.instance_id)
 
     router = APIRouter(responses={status: {"model": ErrorResponse} for status in (400, 404, 409, 410, 503)})
 
