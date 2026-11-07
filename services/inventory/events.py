@@ -122,11 +122,13 @@ class Journal:
         return Cursor(instance_id=self.instance_id, sequence=self.sequence)
 
     def page(self, instance_id, after, limit):
+        if after < 0 or not 1 <= limit <= 500:
+            raise InventoryError(400, "INVALID_CURSOR", "Invalid event sequence or page limit")
         earliest = self._events[0].sequence if self._events else self.sequence + 1
         if instance_id != self.instance_id or after < earliest - 1:
             raise InventoryError(410, "EVENT_CURSOR_RESET", "Take a new snapshot before resuming events", {
                 "instanceId": str(self.instance_id), "earliestSequence": earliest, "latestSequence": self.sequence})
-        if after < 0 or after > self.sequence or not 1 <= limit <= 500:
+        if after > self.sequence:
             raise InventoryError(400, "INVALID_CURSOR", "Invalid event sequence or page limit")
         events = [event.model_copy(deep=True) for event in self._events if event.sequence > after][:limit]
         sequence = events[-1].sequence if events else after
