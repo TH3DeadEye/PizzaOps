@@ -1,0 +1,782 @@
+{
+  "schema_version": 2,
+  "id": "stockroom",
+  "title": "02 / Stock & receiving",
+  "purpose": "Dry goods stay on shelves. Chilled ingredients stay beside the fridge. Deliveries have their own staging area.",
+  "size": [
+    8,
+    8
+  ],
+  "tile_size": [
+    64,
+    32
+  ],
+  "origin": [
+    400,
+    180
+  ],
+  "floors": [
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        0,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        1,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        2,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        3,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        4,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        5,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        6,
+        7
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        0
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        1
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        2
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        3
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        4
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        5
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        6
+      ]
+    },
+    {
+      "sprite": "floor_cream",
+      "position": [
+        7,
+        7
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        0
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        0,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        1
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        1,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        2
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        2,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        3
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        3,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        4
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        4,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        5
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        5,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        6
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        6,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "wall_cream_nw",
+      "position": [
+        0,
+        7
+      ],
+      "layer": "back",
+      "boundary": "west"
+    },
+    {
+      "sprite": "wall_cream_ne",
+      "position": [
+        7,
+        0
+      ],
+      "layer": "back",
+      "boundary": "north"
+    },
+    {
+      "sprite": "storage_shelf",
+      "position": [
+        1,
+        1
+      ],
+      "occupied": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "sprite": "storage_shelf",
+      "position": [
+        3,
+        1
+      ],
+      "occupied": [
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "sprite": "fridge",
+      "position": [
+        6,
+        1
+      ],
+      "occupied": [
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "sprite": "crate_flour",
+      "position": [
+        1,
+        5
+      ],
+      "occupied": [
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "sprite": "crate_cheese",
+      "position": [
+        3,
+        5
+      ],
+      "occupied": [
+        [
+          3,
+          5
+        ]
+      ]
+    },
+    {
+      "sprite": "crate_tomatoes",
+      "position": [
+        5,
+        5
+      ],
+      "occupied": [
+        [
+          5,
+          5
+        ]
+      ]
+    },
+    {
+      "sprite": "crate_empty",
+      "position": [
+        6,
+        6
+      ],
+      "occupied": [
+        [
+          6,
+          6
+        ]
+      ]
+    },
+    {
+      "sprite": "flour_sack",
+      "position": [
+        1,
+        6
+      ],
+      "occupied": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    {
+      "sprite": "pizza_box_stack",
+      "position": [
+        3,
+        1
+      ],
+      "elevation": 58,
+      "depth_bias": 0.02
+    }
+  ],
+  "characters": [
+    {
+      "character": "stock_worker",
+      "position": [
+        3,
+        3
+      ],
+      "action": "work",
+      "direction": "se"
+    }
+  ],
+  "blocked": [
+    [
+      1,
+      1
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      1,
+      5
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      6,
+      6
+    ],
+    [
+      1,
+      6
+    ]
+  ],
+  "doors": [],
+  "labels": [
+    {
+      "text": "STOCKROOM",
+      "position": [
+        4.5,
+        6.8
+      ]
+    }
+  ]
+}
