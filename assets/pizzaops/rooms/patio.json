@@ -604,6 +604,15 @@
       ]
     },
     {
+      "sprite": "pizza_slice",
+      "position": [
+        3.25,
+        2.2
+      ],
+      "elevation": 32,
+      "depth_bias": 0.02
+    },
+    {
       "sprite": "table_round",
       "position": [
         5,

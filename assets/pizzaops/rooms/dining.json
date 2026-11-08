@@ -716,6 +716,15 @@
       "depth_bias": 0.02
     },
     {
+      "sprite": "salt_pepper",
+      "position": [
+        2.35,
+        2.85
+      ],
+      "elevation": 32,
+      "depth_bias": 0.02
+    },
+    {
       "sprite": "table_round",
       "position": [
         5,

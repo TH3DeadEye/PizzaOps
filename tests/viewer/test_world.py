@@ -85,12 +85,12 @@ def test_chef_walks_to_the_oven_on_start_and_to_the_pass_when_the_pie_is_done():
     chef = world.actors["chef"]
     home = chef.position
     world.apply(event("kitchen", "COOK_STARTED", 1, job_record(ORDER, status="COOKING", pizza="PEPPERONI"), ORDER))
-    assert chef.plan[0] == ("go", (2.4, 2.4))
+    assert chef.plan[0] == ("go", world.oven_spot)
     advance(world, 3)
     assert chef.action == "work"
     world.apply(event("kitchen", "COOK_COMPLETED", 2, job_record(ORDER, status="COOKED", version=2, pizza="PEPPERONI"), ORDER))
     assert any(step == ("carry", "pizza_box") for step in chef.plan)
-    advance(world, 12)
+    advance(world, 20)  # the pass is now reached through the kitchen doorway
     assert chef.carrying is None
     assert chef.position == pytest.approx(home, abs=0.05)
 

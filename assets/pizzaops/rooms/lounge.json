@@ -693,6 +693,15 @@
       ]
     },
     {
+      "sprite": "pizza_box",
+      "position": [
+        5.25,
+        4.1
+      ],
+      "elevation": 32,
+      "depth_bias": 0.02
+    },
+    {
       "sprite": "plant",
       "position": [
         6,

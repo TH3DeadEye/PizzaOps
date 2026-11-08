@@ -13,21 +13,12 @@ from dataclasses import dataclass, field
 
 from viewer import dialogue
 from viewer.geometry import step_towards
+from viewer.layout import Layout
 from viewer.updates import Event, Resync, SERVICES, Snapshot, Status
 
 TERMINAL = {"READY", "FAILED"}
 WALK_SPEED = 1.6  # tiles per second
 MAX_SEEN = 20_000
-
-ENTRANCE = (11.4, 11.0)
-WAIT_SLOTS = [(5.7, 5.3), (6.6, 5.9), (7.5, 6.5), (8.4, 7.1), (9.3, 7.7), (10.2, 8.3)]
-OVERFLOW_SPOT = (10.7, 9.6)
-TABLE_SEATS = [(8.1, 7.4), (6.9, 4.4), (10.3, 8.9)]
-HOMES = {"chef": ((2.8, 3.7), "sw"), "cashier": ((3.4, 5.2), "se"), "stock_worker": ((6.5, 1.7), "se")}
-OVEN_SPOT = (2.4, 2.4)
-PASS_SPOT = (3.4, 6.4)
-CRATES_SPOT = (7.6, 2.0)
-
 
 @dataclass
 class Actor:
@@ -47,6 +38,7 @@ class Actor:
     arrived: int = 0
     state: str | None = None
     slot: tuple | None = None
+    layout: Layout | None = field(default=None, repr=False)
 
     def say(self, text, now, seconds=None):
         if text:
@@ -86,8 +78,15 @@ class Actor:
             self.action = "idle"
         while self.plan:
             step = self.plan.popleft()
-            if step[0] == "go":
-                self.destination = step[1]
+            if step[0] in ("go", "via"):
+                if step[0] == "go" and self.layout is not None:
+                    path = self.layout.route(self.position, step[1])
+                    if not path:
+                        continue
+                    self.destination = path[0]
+                    self.plan.extendleft(reversed([("via", point) for point in path[1:]]))
+                else:
+                    self.destination = step[1]
                 return
             if step[0] == "act":
                 _, self.action, seconds, direction = step
@@ -116,7 +115,15 @@ def short(identifier):
 
 
 class World:
-    def __init__(self):
+    def __init__(self, scene=None):
+        self.layout = Layout(scene)
+        marks = self.layout.landmarks
+        self.entrance = tuple(marks["entrance"])
+        self.wait_slots = list(map(tuple, marks["wait_slots"]))
+        self.overflow = tuple(marks["overflow"])
+        self.table_seats = list(map(tuple, marks["table_seats"]))
+        self.homes = {name: (tuple(home), direction) for name, (home, direction) in marks["homes"].items()}
+        self.oven_spot, self.pass_spot, self.crates_spot = (tuple(marks[key]) for key in ("oven", "pass", "crates"))
         self.time = 0.0
         self.orders = {}
         self.jobs = {}
@@ -130,7 +137,7 @@ class World:
         self.recipes = {}
         self.services = {name: ServiceView() for name in SERVICES}
         self.seen = {name: set() for name in SERVICES}
-        self.actors = {name: Actor(name, home, direction) for name, (home, direction) in HOMES.items()}
+        self.actors = {name: Actor(name, home, direction, layout=self.layout) for name, (home, direction) in self.homes.items()}
         self.customers = {}
         self.ticker = deque(maxlen=14)
         self.resyncs = 0
@@ -322,13 +329,13 @@ class World:
         job = payload if kind.startswith("COOK_") else self.jobs.get(order_id)
         words = {"pizza": (job or {}).get("pizzaType"), "quantity": (job or {}).get("quantity")}
         chef.say(dialogue.chef_line(kind, payload, self.mood_label, seed, **words), now)
-        home, home_direction = HOMES["chef"]
+        home, home_direction = self.homes["chef"]
         if kind == "COOK_CHECKING":
             chef.do("talk", now, 1.4, "sw")
         elif kind == "COOK_STARTED":
-            chef.schedule(("go", OVEN_SPOT), ("act", "work", 90.0, "sw"))
+            chef.schedule(("go", self.oven_spot), ("act", "work", 90.0, "sw"))
         elif kind == "COOK_COMPLETED":
-            chef.schedule(("carry", "pizza_box"), ("go", PASS_SPOT), ("act", "talk", 1.0, "se"), ("carry", None),
+            chef.schedule(("carry", "pizza_box"), ("go", self.pass_spot), ("act", "talk", 1.0, "se"), ("carry", None),
                           ("go", home), ("act", "idle", 0.0, home_direction))
         elif kind in ("COOK_FAILED", "COOK_UNKNOWN"):
             chef.do("frustrated", now, 2.5, "sw")
@@ -344,11 +351,11 @@ class World:
         worker = self.actors["stock_worker"]
         words = self._words(self.orders.get(order_id))
         worker.say(dialogue.stock_worker_line(kind, payload, seed, **words), now)
-        home, home_direction = HOMES["stock_worker"]
+        home, home_direction = self.homes["stock_worker"]
         if kind == "STOCK_READ":
             worker.do("talk", now, 1.2, "se")
         elif kind == "RESERVATION_SUCCEEDED":
-            worker.schedule(("go", CRATES_SPOT), ("act", "carry", 0.8, "sw"), ("go", home), ("act", "work", 1.0, home_direction))
+            worker.schedule(("go", self.crates_spot), ("act", "carry", 0.8, "sw"), ("go", home), ("act", "work", 1.0, home_direction))
         elif kind == "RESERVATION_REJECTED":
             worker.do("frustrated", now, 2.0, "sw")
         elif kind == "STOCK_RESTOCKED":
@@ -363,8 +370,8 @@ class World:
         if order_id in self.customers:
             return self.customers[order_id]
         self._arrivals += 1
-        customer = Actor(order["customer"]["appearance"], ENTRANCE, "nw", order_id=order_id, trait=order["customer"]["trait"],
-                         arrived=self._arrivals, state="waiting")
+        customer = Actor(order["customer"]["appearance"], self.entrance, "nw", order_id=order_id, trait=order["customer"]["trait"],
+                         arrived=self._arrivals, state="waiting", layout=self.layout)
         self.customers[order_id] = customer
         self._seat_waiting()
         return customer
@@ -372,10 +379,11 @@ class World:
     def _seat_waiting(self):
         waiting = sorted((customer for customer in self.customers.values() if customer.state == "waiting"), key=lambda c: c.arrived)
         for index, customer in enumerate(waiting):
-            if index < len(WAIT_SLOTS):
-                slot = WAIT_SLOTS[index]
+            if index < len(self.wait_slots):
+                slot = self.wait_slots[index]
             else:
-                slot = (OVERFLOW_SPOT[0], OVERFLOW_SPOT[1] + 0.35 * (index - len(WAIT_SLOTS)))
+                # Overflow shares the lobby holding point instead of drifting outside the map.
+                slot = self.overflow
             if customer.slot != slot:
                 customer.slot = slot
                 customer.schedule(("go", slot), ("act", "idle", 0.0, "sw"))
@@ -385,16 +393,16 @@ class World:
             return
         customer.state = "leaving"
         if outcome == "READY":
-            customer.schedule(("go", WAIT_SLOTS[0]), ("act", "talk", 0.8, "sw"), ("carry", "pizza_box"), ("go", ENTRANCE), ("gone",))
+            customer.schedule(("go", self.wait_slots[0]), ("act", "talk", 0.8, "sw"), ("carry", "pizza_box"), ("go", self.entrance), ("gone",))
         else:
-            customer.schedule(("act", "frustrated", 2.4, "sw"), ("go", ENTRANCE), ("gone",))
+            customer.schedule(("act", "frustrated", 2.4, "sw"), ("go", self.entrance), ("gone",))
         self._seat_waiting()
 
     def _seat(self, customer):
         if customer is None or customer.state in ("seated", "leaving"):
             return
         customer.state = "seated"
-        seat = TABLE_SEATS[customer.arrived % len(TABLE_SEATS)]
+        seat = self.table_seats[customer.arrived % len(self.table_seats)]
         customer.slot = None
         customer.schedule(("go", seat), ("act", "talk", 1.5, "se"))
         self._seat_waiting()

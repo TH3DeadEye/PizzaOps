@@ -720,6 +720,15 @@
       "depth_bias": 0.02
     },
     {
+      "sprite": "basil",
+      "position": [
+        5.35,
+        4.85
+      ],
+      "elevation": 34,
+      "depth_bias": 0.02
+    },
+    {
       "sprite": "pizza_peel",
       "position": [
         0.3,

@@ -19,6 +19,7 @@ os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 from viewer.assets import AssetPack, DEFAULT_ASSET_ROOT
 from viewer.feed import DEFAULT_URLS, Feed, Replay
 from viewer.render import SIZE, Renderer
+from viewer.layout import ROOM_NAMES, load_scene
 from viewer.world import World
 
 
@@ -30,7 +31,7 @@ def run_demo(argv):
 class Show:
     def __init__(self, source, *, pack, record_path=None, speed=1.0, caption="LIVE"):
         self.source = source
-        self.world = World()
+        self.world = World(scene=load_scene(pack.root))
         self.renderer = Renderer(pack)
         self.speed = speed
         self.paused = False
@@ -108,6 +109,7 @@ def main(argv=None):
     parser.add_argument("--mode", choices=("demo", "live", "replay"), default="demo")
     parser.add_argument("--assets", type=Path, default=DEFAULT_ASSET_ROOT)
     parser.add_argument("--atlas", action="store_true")
+    parser.add_argument("--room", choices=ROOM_NAMES, default="restaurant", help="room to preview in demo mode")
     parser.add_argument("--run-id", help="PIZZAOPS_RUN_ID of the live restaurant")
     parser.add_argument("--order-url", default=DEFAULT_URLS["order"])
     parser.add_argument("--kitchen-url", default=DEFAULT_URLS["kitchen"])
@@ -129,7 +131,7 @@ def main(argv=None):
             extra += ["--frames", str(args.frames)]
         if args.screenshot:
             extra += ["--screenshot", str(args.screenshot)]
-        extra += ["--scale", str(args.scale), "--assets", str(args.assets)]
+        extra += ["--scale", str(args.scale), "--assets", str(args.assets), "--room", args.room]
         if args.atlas:
             extra.append("--atlas")
         return run_demo(extra) or 0

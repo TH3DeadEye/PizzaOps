@@ -2,8 +2,9 @@
 
 import json
 from collections import deque
+from pathlib import Path
 
-from viewer.assets import DEFAULT_ASSET_ROOT
+DEFAULT_ASSET_ROOT = Path(__file__).resolve().parents[1] / "assets" / "pizzaops"
 
 ROOM_NAMES = ("restaurant", "kitchen", "stockroom", "pickup", "dining", "patio", "lounge")
 

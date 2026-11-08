@@ -655,6 +655,15 @@
       "depth_bias": 0.02
     },
     {
+      "sprite": "pizza_box_stack",
+      "position": [
+        4.5,
+        1.8
+      ],
+      "elevation": 35,
+      "depth_bias": 0.02
+    },
+    {
       "sprite": "pizza_display",
       "position": [
         6,

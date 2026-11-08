@@ -60,6 +60,7 @@ def build():
     obj(s, "trash_bin", 6, 1, block=True)
     obj(s, "prep_counter", 5, 5, block=True)
     tabletop(s, "pizza_raw", 5, 5, 34)
+    obj(s, "basil", 5.35, 4.85, elevation=34, depth_bias=0.02)
     obj(s, "pizza_peel", 0.3, 1.7)
     obj(s, "sauce_pot", 0.9, 4.9, elevation=32, depth_bias=0.04)
     obj(s, "wall_clock", 3, 0, elevation=38, layer="back")
@@ -84,6 +85,7 @@ def build():
     tabletop(s, "register", 2, 2, 35)
     obj(s, "service_counter", 4, 2, block=True)
     tabletop(s, "pizza_box_open", 4, 2, 35)
+    obj(s, "pizza_box_stack", 4.5, 1.8, elevation=35, depth_bias=0.02)
     obj(s, "pizza_display", 6, 2, block=True)
     obj(s, "menu_board", 4, 0, elevation=28, layer="back")
     obj(s, "window", 0, 3, elevation=22, layer="back")
@@ -102,6 +104,7 @@ def build():
     obj(s, "floor_lamp", 6, 1, block=True)
     obj(s, "olive_tree", 1, 1, block=True)
     table(s, 2, 3, meal="pizza_cheese")
+    obj(s, "salt_pepper", 2.35, 2.85, elevation=32, depth_bias=0.02)
     table(s, 5, 5, round_table=True)
     obj(s, "plant", 1, 6, block=True)
     actor(s, "customer_teal", 4, 1, "talk", "se")
@@ -114,6 +117,7 @@ def build():
     obj(s, "awning", 0, 3, elevation=65, layer="back")
     obj(s, "exterior_lantern", 0, 5, elevation=42, layer="back")
     table(s, 3, 2, round_table=True)
+    obj(s, "pizza_slice", 3.25, 2.2, elevation=32, depth_bias=0.02)
     table(s, 5, 5, round_table=True)
     obj(s, "olive_tree", 6, 1, block=True)
     obj(s, "plant", 1, 6, block=True)
@@ -127,6 +131,7 @@ def build():
     obj(s, "floor_lamp", 1, 1, block=True)
     obj(s, "window", 0, 4, elevation=25, layer="back")
     table(s, 5, 4, round_table=True)
+    obj(s, "pizza_box", 5.25, 4.1, elevation=32, depth_bias=0.02)
     obj(s, "plant", 6, 1, block=True)
     obj(s, "storage_shelf", 4, 1, block=True)
     obj(s, "wall_clock", 2, 0, elevation=38, layer="back")
@@ -167,8 +172,8 @@ def build():
         full["blocked"].extend([[x + dx, y + dy] for x, y in module["blocked"]])
     # Front edges stay cut away so the room interiors remain visible.
     for n in range(16):
-        obj(full, "foundation_sw", 15, n, layer="ground")
-        obj(full, "foundation_se", n, 15, layer="ground")
+        obj(full, "foundation_se", 15, n, layer="ground")
+        obj(full, "foundation_sw", n, 15, layer="ground")
     full["landmarks"] = {
         "entrance": [3, 15], "wait_slots": [[2, 11], [3, 11], [3, 12], [4, 12], [5, 12], [5, 13]],
         "overflow": [4, 14], "table_seats": [[12, 9], [9, 13], [12, 14]],

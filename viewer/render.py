@@ -6,10 +6,9 @@ from pathlib import Path
 import pygame
 
 from viewer.assets import Animator, AssetPack, DEFAULT_ASSET_ROOT
-from viewer.geometry import depth_key, project
+from viewer.scene import SceneView, SIZE, PANEL_X, STAGE
 from viewer.updates import SERVICES
 
-SIZE = (900, 600)
 INK = "#49343b"
 CREAM = "#f3dfb6"
 MUTED = "#c8ad8d"
@@ -40,12 +39,13 @@ class Renderer:
     def __init__(self, pack, scene_path=None):
         self.pack = pack
         self.scene = json.loads((scene_path or pack.root / "scene.json").read_text())
-        self.origin = tuple(self.scene["origin"])
+        self.view = SceneView(pack, self.scene)
+        self.origin = self.view.origin
         self.font = pygame.font.Font(None, 18)
         self.small = pygame.font.Font(None, 16)
         self.title = pygame.font.Font(None, 32)
         self.tiny = pygame.font.Font(None, 14)
-        self.oven = Animator(pack, "oven/lit")
+        self.oven = self.view.oven
         self.animators = {}
 
     def text(self, target, content, point, font=None, color=CREAM):
@@ -75,92 +75,81 @@ class Renderer:
         self._ticker(target, world)
 
     def _banner(self, target, world, mode, paused, speed, caption):
-        pygame.draw.rect(target, PANEL, (0, 0, SIZE[0], 54))
+        pygame.draw.rect(target, PANEL, (0, 0, SIZE[0], 72))
         self.text(target, "PIZZAOPS", (18, 8), self.title)
-        self.text(target, caption, (148, 18), self.small, MUTED)
-        x = 430
+        self.text(target, caption[:55], (148, 18), self.small, MUTED)
+        x = 720
         for name in SERVICES:
             view = world.services[name]
             color = STATUS_COLOR.get(view.state, MUTED)
             pygame.draw.circle(target, color, (x + 6, 20), 5)
             self.text(target, f"{name[:3].upper()} {view.state}", (x + 16, 12), self.tiny, color)
-            x += 110
-        self.text(target, "PAUSED" if paused else f"{speed:g}x", (830, 12), self.small, WARN if paused else GOOD)
-        self.text(target, "SPACE pause   +/- speed   ESC quit", (18, 34), self.tiny, MUTED)
+            x += 150
+        self.text(target, "PAUSED" if paused else f"{speed:g}x", (1210, 12), self.small, WARN if paused else GOOD)
+        self.text(target, "SPACE pause   +/- speed   ESC quit", (18, 48), self.small, MUTED)
+        self.text(target, "KITCHEN + STOCKROOM / PICKUP + DINING", (720, 48), self.small, MUTED)
 
     def _scene(self, target, world):
-        origin = self.origin
-        for tile in sorted(self.scene["floors"], key=depth_key):
-            self.pack.draw(target, tile["sprite"], project(tile["position"], origin))
-        for obj in self.scene["objects"]:
-            if obj.get("layer") in ("ground", "back"):
-                self.pack.draw(target, obj["sprite"], project(obj["position"], origin, obj.get("elevation", 0)))
-        drawables = [obj for obj in self.scene["objects"] if obj.get("layer") not in ("ground", "back")]
-        actors = [{"position": list(actor.position), "actor": actor} for actor in world.everyone() if not actor.gone]
-        for record in sorted(drawables + actors, key=depth_key):
-            if "actor" in record:
-                self._actor(target, record["actor"])
-            else:
-                sprite = self.oven.frame_id if record.get("animation") else record["sprite"]
-                self.pack.draw(target, sprite, project(record["position"], origin, record.get("elevation", 0)))
-
-    def _actor(self, target, actor):
-        animator = self.animators.get(id(actor))
-        sprite = animator.frame_id if animator else f"{actor.character}_idle_se_00"
-        feet = project(actor.position, self.origin)
-        self.pack.draw(target, sprite, feet)
-        if actor.carrying:
-            self.pack.draw(target, actor.carrying, (feet[0], feet[1] - 18))
-        if actor.speech:
-            self._bubble(target, feet, actor.speech)
+        actors = []
+        for actor in world.everyone():
+            if actor.gone:
+                continue
+            animator = self.animators.get(id(actor))
+            actors.append({"position": actor.position,
+                           "sprite": animator.frame_id if animator else f"{actor.character}_idle_se_00",
+                           "carrying": actor.carrying if actor.action != "carry" else None})
+        self.view.draw(target, actors, oven_lit=any(j["status"] == "COOKING" for j in world.jobs.values()))
+        for actor in world.everyone():
+            if not actor.gone and actor.speech:
+                self._bubble(target, self.view.point(actor.position), actor.speech)
 
     def _bubble(self, target, feet, speech):
         lines = wrap(speech)
         width = max(self.tiny.size(line)[0] for line in lines) + 12
         height = 6 + 12 * len(lines)
         left, top = feet[0] - width // 2, feet[1] - 78 - height
-        left = max(8, min(left, SIZE[0] - width - 8))
-        top = max(58, top)
+        left = max(STAGE.left, min(left, STAGE.right - width))
+        top = max(STAGE.top, top)
         pygame.draw.rect(target, CREAM, (left, top, width, height), border_radius=6)
         pygame.draw.polygon(target, CREAM, [(feet[0] - 5, top + height), (feet[0] + 5, top + height), (feet[0], top + height + 7)])
         for index, line in enumerate(lines):
             self.text(target, line, (left + 6, top + 3 + index * 12), self.tiny, INK)
 
     def _hud(self, target, world):
-        pygame.draw.rect(target, PANEL, (12, 64, 176, 250), border_radius=6)
+        x = PANEL_X
+        pygame.draw.rect(target, PANEL, (x - 6, 88, 224, 674), border_radius=8)
         mood = world.mood_label
-        self.pack.draw(target, MOOD_ICON.get(mood, "ui_mood_calm"), (34, 88))
-        self.text(target, mood.title(), (50, 80), self.small)
+        self.pack.draw(target, MOOD_ICON.get(mood, "ui_mood_calm"), (x + 18, 112))
+        self.text(target, mood.title(), (x + 36, 104), self.font)
         if world.mood:
-            self.text(target, f"trust {world.mood['trust']}  patience {world.mood['patience']}", (22, 100), self.tiny, MUTED)
-        self.text(target, "STOCK", (22, 122), self.tiny, MUTED)
-        y = 138
+            self.text(target, f"trust {world.mood['trust']}  patience {world.mood['patience']}", (x + 10, 130), self.small, MUTED)
+        self.text(target, "STOCK", (x + 10, 164), self.small, MUTED)
+        y = 188
         for name, quantity in (world.stock or {}).items():
             color = BAD if quantity <= 0 else WARN if quantity < 10 else CREAM
-            self.text(target, f"{name:<10} {quantity:>4}", (22, y), self.tiny, color)
-            y += 14
+            self.text(target, f"{name:<10} {quantity:>4}", (x + 10, y), self.small, color)
+            y += 20
         if world.stock_uncertain:
-            self.text(target, "stock may be stale", (22, y), self.tiny, WARN)
-            y += 14
+            self.text(target, "stock may be stale", (x + 10, y), self.small, WARN)
+            y += 20
         counts = world.counters
-        self.text(target, f"open {counts['open']}  ready {counts['ready']}", (22, y + 8), self.tiny, GOOD)
-        self.text(target, f"failed {counts['failed']}  unknown {counts['unknown']}", (22, y + 22), self.tiny, BAD if counts["failed"] or counts["unknown"] else MUTED)
-        pygame.draw.rect(target, PANEL, (712, 64, 176, 250), border_radius=6)
-        self.text(target, "ORDERS", (724, 72), self.tiny, MUTED)
-        y = 90
+        self.text(target, f"open {counts['open']}  ready {counts['ready']}", (x + 10, y + 12), self.small, GOOD)
+        self.text(target, f"failed {counts['failed']}  unknown {counts['unknown']}", (x + 10, y + 34), self.small, BAD if counts["failed"] or counts["unknown"] else MUTED)
+        self.text(target, "ORDERS", (x + 10, 394), self.small, MUTED)
+        y = 420
         for order in world.recent_orders(8):
             color = {"READY": GOOD, "FAILED": BAD, "UNKNOWN": WARN}.get(order["status"], CREAM)
             pizza = f"{order['pizzaType'][:3]} x{order['quantity']}"
-            self.text(target, f"{order['status']:<10} {pizza}", (724, y), self.tiny, color)
-            y += 14
+            self.text(target, f"{order['status']:<10} {pizza}", (x + 10, y), self.small, color)
+            y += 20
             if order.get("failureReason"):
-                self.text(target, order["failureReason"], (732, y), self.tiny, BAD)
-                y += 14
+                self.text(target, order["failureReason"], (x + 16, y), self.tiny, BAD)
+                y += 18
 
     def _ticker(self, target, world):
-        pygame.draw.rect(target, PANEL, (0, 520, SIZE[0], 80))
-        y = 528
-        for line in list(world.ticker)[-5:]:
+        pygame.draw.rect(target, PANEL, (0, 778, SIZE[0], 62))
+        y = 784
+        for line in list(world.ticker)[-4:]:
             who = (line["service"] or "")[:3].upper()
             self.text(target, f"{who:<3} {line['type']:<22} {line['detail']}", (16, y), self.tiny, MUTED)
             y += 14
