@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import math
 import os
 from pathlib import Path
 
@@ -10,54 +9,13 @@ os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 import pygame
 
 from viewer.assets import Animator, AssetPack, DEFAULT_ASSET_ROOT
+from viewer.geometry import depth_key, direction_for, move_actor, project, unproject  # noqa: F401  (public helpers)
 
 SIZE = (900, 600)
 INK = "#49343b"
 CREAM = "#f3dfb6"
 CHARACTERS = ["chef", "cashier", "stock_worker", "customer_amber", "customer_teal", "customer_lavender"]
 ACTIONS = ["idle", "walk", "work", "carry", "talk", "frustrated"]
-
-
-def project(position, origin=(0, 0), elevation=0):
-    return (round(origin[0] + (position[0] - position[1]) * 32),
-            round(origin[1] + (position[0] + position[1]) * 16 - elevation))
-
-
-def unproject(point, origin=(0, 0)):
-    screen_x = (point[0] - origin[0]) / 32
-    screen_y = (point[1] - origin[1]) / 16
-    return ((screen_x + screen_y) / 2, (screen_y - screen_x) / 2)
-
-
-def depth_key(record):
-    return (sum(record["position"]) + record.get("depth_bias", 0), record["position"][0])
-
-
-def direction_for(delta):
-    if abs(delta[0]) >= abs(delta[1]):
-        return "se" if delta[0] >= 0 else "nw"
-    return "sw" if delta[1] >= 0 else "ne"
-
-
-def move_actor(actor, delta_seconds):
-    if not actor.get("route"):
-        return
-    remaining = delta_seconds * 1.25
-    while remaining > 0:
-        destination = actor["route"][actor["route_index"]]
-        delta = [destination[axis] - actor["position"][axis] for axis in (0, 1)]
-        distance = math.hypot(*delta)
-        if distance < 1e-6:
-            actor["route_index"] = (actor["route_index"] + 1) % len(actor["route"])
-            if all(point == actor["position"] for point in actor["route"]):
-                break
-            continue
-        actor["direction"] = direction_for(delta)
-        step = min(distance, remaining)
-        actor["position"] = [actor["position"][axis] + delta[axis] / distance * step for axis in (0, 1)]
-        remaining -= step
-        if step == distance:
-            actor["route_index"] = (actor["route_index"] + 1) % len(actor["route"])
 
 
 class Showcase:
