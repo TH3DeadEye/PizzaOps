@@ -43,6 +43,29 @@ curl -s "${H[@]}" http://127.0.0.1:8081/mood
 
 The order is `RECEIVED` at once and `READY` a few seconds later (Kitchen cooks for `KITCHEN_COOKING_S`, default 3 s). Repeating the same `POST` returns the same order with `200`; stopping Kitchen makes the next order `FAILED` with `KITCHEN_UNAVAILABLE` instead of hanging. Each service prints one JSON line per event; `grep <traceId>` across the three outputs follows one order through all of them. Settings are environment variables (`ORDER_KITCHEN_URL`, `ORDER_MENU`, `ORDER_WORKERS`, `KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`; `tests/test_p0_acceptance.py` starts all three services as real processes.
 
+## Run the restaurant
+
+One command starts all three services under a shared run ID (Ctrl-C stops them):
+
+```sh
+uv run python scripts/dev.py --cooking-s 1
+```
+
+In a second terminal, watch:
+
+```sh
+export PIZZAOPS_RUN_ID=...          # printed by the launcher
+uv run python -m viewer --mode live
+```
+
+Then place the curl order above. The waiter, chef, stockkeeper and customer react; they never decide the outcome. `SPACE` pauses the window, `+/-` change playback speed, `ESC` quits. Pause and speed do not pause the kitchen.
+
+```sh
+uv run python -m viewer --mode live --record recordings/shift.jsonl
+uv run python -m viewer --mode replay --recording recordings/shift.jsonl
+uv run python -m viewer --mode demo
+```
+
 ## Run the standalone ZIP
 
 Unzip `PizzaOps_Cozy_Isometric_Asset_Pack_v1.zip`, open a terminal in its folder, and run:

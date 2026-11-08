@@ -1,6 +1,6 @@
 # PizzaOps service architecture and build plan
 
-Status: implementation plan, 2026-11-06. Stages 0 to 3 are done (architecture, Inventory, Kitchen, Order) and milestone P0 passes as three real processes; see the milestone table in section 8. The observer, autopilot and fault/mood polish are still to do.
+Status: implementation plan, 2026-11-06. Stages 0 to 4 are done (architecture, Inventory, Kitchen, Order, live observer) and milestone P0 passes as three real processes; see the milestone table in section 8. The autopilot and fault/mood polish are still to do.
 
 ## 1. Starting point and target
 
@@ -174,7 +174,7 @@ Use `create_app(settings)` and dependency injection for service-local stores, cl
 | 1 ✓ | `feat/inventory-service` | Health, stock, restock, atomic reservation, lookup, journal | Twelve competing reservations for three units yield exactly three successes; concurrent duplicates deduct once; mixed valid/invalid items deduct nothing (`tests/inventory`) |
 | 2 ✓ | `feat/kitchen-service` | Recipe expansion, async jobs, two workers, Inventory client, mood state, reconciliation | Correct stock usage, known shortage, queue rejection, repeated submission, lost reservation response reconciled without double deduction, lost request resubmitted under the same key, Inventory restart reported as `DEPENDENCY_STATE_LOST`, exhausted reconciliation reported as `FULFILLMENT_UNCONFIRMED`, one confirmed stale read makes the next order ask for authoritative stock (`tests/kitchen`, including a two-process HTTP test) |
 | 3 ✓ | `feat/order-service` | Async order admission, status tracking, trace propagation | Real HTTP across all three processes reaches READY with one trace ID in all three logs; shortage reaches FAILED / `INSUFFICIENT_STOCK`; a stopped Kitchen gives FAILED / `KITCHEN_UNAVAILABLE` within budget; lost job response never causes duplicate cooking (one reservation, stock deducted once); Kitchen restart surfaces as `DEPENDENCY_STATE_LOST`; queue-full admission leaves no record (`tests/order`, `tests/test_p0_acceptance.py`) |
-| 4 | `feat/live-observer` | Snapshot/event polling, reconnects, sprite reactions | Manual order visibly triggers real actions; duplicate events, cursor expiry, and disconnection do not corrupt the scene |
+| 4 ✓ | `feat/live-observer` | Snapshot/event polling, reconnects, sprite reactions | A curl order produces speech and movement in the live viewer; duplicate events are ignored; a stale cursor takes a new snapshot; a wrong run ID is `RUN_MISMATCH` not a hang; a full feed queue signals `Resync` instead of dropping; a JSONL recording replays (`tests/viewer`, `scripts/dev.py`) |
 | 5 | `feat/autopilot-scenarios` | Seeded customers, restocking, recording, playback | An unattended normal shift and a shortage/recovery scenario run; recorded events can be replayed |
 | 6 | `feat/faults-and-moods` | Stale reads, delay/503 faults, trust, cooldowns | One confirmed stale-stock incident changes the next decision; response-loss and restart tests report uncertainty honestly |
 
