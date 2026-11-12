@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "name": "PizzaOps Directional Room Furniture",
+  "version": "1.0.0",
+  "tile_size": [
+    64,
+    32
+  ],
+  "projection": "screen_x=(map_x-map_y)*32; screen_y=(map_x+map_y)*16",
+  "alpha": "binary RGBA",
+  "sprites": {
+    "service_counter_se": {
+      "file": "sprites/service/service_counter_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "service",
+      "bounds": [
+        41,
+        98,
+        79,
+        66
+      ],
+      "footprint": [
+        1,
+        2
+      ],
+      "object": "service_counter",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 20,
+      "atlas": {
+        "file": "atlases/service.png",
+        "rect": [
+          0,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "service_counter_sw": {
+      "file": "sprites/service/service_counter_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "service",
+      "bounds": [
+        41,
+        98,
+        79,
+        66
+      ],
+      "footprint": [
+        2,
+        1
+      ],
+      "object": "service_counter",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 20,
+      "atlas": {
+        "file": "atlases/service.png",
+        "rect": [
+          160,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "service_counter_ne": {
+      "file": "sprites/service/service_counter_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "service",
+      "bounds": [
+        41,
+        96,
+        78,
+        68
+      ],
+      "footprint": [
+        2,
+        1
+      ],
+      "object": "service_counter",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 20,
+      "atlas": {
+        "file": "atlases/service.png",
+        "rect": [
+          320,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "service_counter_nw": {
+      "file": "sprites/service/service_counter_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "service",
+      "bounds": [
+        41,
+        96,
+        79,
+        68
+      ],
+      "footprint": [
+        1,
+        2
+      ],
+      "object": "service_counter",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 20,
+      "atlas": {
+        "file": "atlases/service.png",
+        "rect": [
+          480,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "prep_bench_sw": {
+      "file": "sprites/kitchen/prep_bench_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        54,
+        98,
+        52,
+        59
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "prep_bench",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 13,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "prep_bench_se": {
+      "file": "sprites/kitchen/prep_bench_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        54,
+        98,
+        52,
+        59
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "prep_bench",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 13,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "prep_bench_ne": {
+      "file": "sprites/kitchen/prep_bench_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        54,
+        97,
+        52,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "prep_bench",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 13,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          0,
+          160,
+          192
+        ]
+      }
+    },
+    "prep_bench_nw": {
+      "file": "sprites/kitchen/prep_bench_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        54,
+        97,
+        52,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "prep_bench",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 13,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          0,
+          160,
+          192
+        ]
+      }
+    }
+  },
+  "objects": {
+    "service_counter": {
+      "category": "service",
+      "description": "Straight walnut/cream guest counter; solid paneled front, open rear shelves.",
+      "variants": {
+        "se": "service_counter_se",
+        "sw": "service_counter_sw",
+        "ne": "service_counter_ne",
+        "nw": "service_counter_nw"
+      },
+      "turnaround": "turnarounds/service_counter.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/service_counter.png",
+      "prompt": "prompts/service_counter.txt",
+      "source_sha256": "735afe6a1e6da48ce829689de396eacf5f0d96cc221164c1c28ef60dc9c5a8b1"
+    },
+    "prep_bench": {
+      "category": "kitchen",
+      "description": "Walnut dough prep bench, cream stone worktop, two drawers above two doors on FRONT, plain wooden BACK; empty worktop.",
+      "variants": {
+        "sw": "prep_bench_sw",
+        "se": "prep_bench_se",
+        "ne": "prep_bench_ne",
+        "nw": "prep_bench_nw"
+      },
+      "turnaround": "turnarounds/prep_bench.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/prep_bench.png",
+      "prompt": "prompts/prep_bench.txt",
+      "source_sha256": "b608d0b2860c136f9e83766d430679f7caa5d4c0447ee555d1a08352084c31a8"
+    }
+  },
+  "animations": {},
+  "directions": [
+    "se",
+    "sw",
+    "ne",
+    "nw"
+  ],
+  "missing_sources": [
+    "topping_station",
+    "brick_oven",
+    "boxing_bench",
+    "wash_sink",
+    "stand_mixer",
+    "vent_hood",
+    "pickup_cubby",
+    "drinks_fridge",
+    "waiting_bench",
+    "register",
+    "booth_straight",
+    "booth_corner",
+    "dining_chair",
+    "dining_table",
+    "water_sideboard",
+    "dish_return",
+    "wire_shelf",
+    "chest_freezer",
+    "flour_bin",
+    "delivery_trolley",
+    "outdoor_table",
+    "outdoor_chair",
+    "patio_umbrella",
+    "planter_divider",
+    "iron_fence",
+    "striped_awning",
+    "staff_locker",
+    "office_desk",
+    "staff_sofa",
+    "kettle_counter",
+    "service_hatch"
+  ],
+  "limitations": [
+    "Static furniture rotations, not animation frames.",
+    "Source views are drawn independently; small surface-detail variations remain.",
+    "Footprints and approach offsets are proposed placement data, not yet wired into the simulation.",
+    "Wall-mounted fixtures need wall elevation; use ground anchor plus an explicit elevation offset."
+  ]
+}
