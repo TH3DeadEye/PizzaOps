@@ -646,15 +646,6 @@
       ]
     },
     {
-      "sprite": "pizza_box_open",
-      "position": [
-        4,
-        2
-      ],
-      "elevation": 35,
-      "depth_bias": 0.02
-    },
-    {
       "sprite": "pizza_box_stack",
       "position": [
         4.5,

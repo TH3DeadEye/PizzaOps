@@ -2822,16 +2822,6 @@
       "room": "pickup"
     },
     {
-      "sprite": "pizza_box_open",
-      "position": [
-        4,
-        10
-      ],
-      "elevation": 35,
-      "depth_bias": 0.02,
-      "room": "pickup"
-    },
-    {
       "sprite": "pizza_box_stack",
       "position": [
         4.5,
@@ -4028,6 +4018,39 @@
     "crates": [
       11,
       4
-    ]
+    ],
+    "prep": [
+      2,
+      3
+    ],
+    "pass_counter": [
+      4,
+      10
+    ],
+    "counter_elevation": 35,
+    "pickup": [
+      [
+        4,
+        11
+      ],
+      [
+        5,
+        11
+      ]
+    ],
+    "shelf": [
+      11,
+      2
+    ],
+    "standoff": {
+      "chef": [
+        7,
+        3
+      ],
+      "stock_worker": [
+        9,
+        3
+      ]
+    }
   }
 }

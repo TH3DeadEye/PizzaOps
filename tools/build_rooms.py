@@ -83,8 +83,7 @@ def build():
     s = room("pickup", "03 / Order & pickup", "Enter, order at the register, collect at the display. The staff aisle stays behind the counter.", "floor_terracotta")
     obj(s, "service_counter", 2, 2, block=True)
     tabletop(s, "register", 2, 2, 35)
-    obj(s, "service_counter", 4, 2, block=True)
-    tabletop(s, "pizza_box_open", 4, 2, 35)
+    obj(s, "service_counter", 4, 2, block=True)  # the pass: finished boxes are set down here in live mode
     obj(s, "pizza_box_stack", 4.5, 1.8, elevation=35, depth_bias=0.02)
     obj(s, "pizza_display", 6, 2, block=True)
     obj(s, "menu_board", 4, 0, elevation=28, layer="back")
@@ -178,7 +177,11 @@ def build():
         "entrance": [3, 15], "wait_slots": [[2, 11], [3, 11], [3, 12], [4, 12], [5, 12], [5, 13]],
         "overflow": [4, 14], "table_seats": [[12, 9], [9, 13], [12, 14]],
         "homes": {"chef": [[2, 3], "sw"], "cashier": [[2, 9], "sw"], "stock_worker": [[11, 3], "se"]},
-        "oven": [2, 2], "pass": [4, 9], "crates": [11, 4]}
+        "oven": [2, 2], "pass": [4, 9], "crates": [11, 4],
+        # Live choreography: the chef shapes dough at the prep counter, sets finished boxes on the pass counter,
+        # and customers collect them from the front; a stale-stock argument happens at the stockroom doorway.
+        "prep": [2, 3], "pass_counter": [4, 10], "counter_elevation": 35, "pickup": [[4, 11], [5, 11]],
+        "shelf": [11, 2], "standoff": {"chef": [7, 3], "stock_worker": [9, 3]}}
     full["blocked"] = [list(p) for p in sorted(set(map(tuple, full["blocked"])))]
     return full
 
