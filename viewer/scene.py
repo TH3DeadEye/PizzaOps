@@ -31,8 +31,16 @@ class SceneView:
         x, y = project(position, elevation=elevation)
         return self.origin[0] + x * self.scale, self.origin[1] + y * self.scale
 
-    def sprite(self, target, sprite, position, elevation=0):
-        return self.pack.draw(target, sprite, self.point(position, elevation), self.scale)
+    def sprite(self, target, sprite, position, elevation=0, alpha=1.0):
+        if alpha >= 1.0:
+            return self.pack.draw(target, sprite, self.point(position, elevation), self.scale)
+        if alpha <= 0.0:
+            return None
+        image = self.pack.image(sprite, self.scale).copy()
+        image.set_alpha(round(255 * alpha))
+        anchor = self.pack.sprites[sprite]["anchor"]
+        x, y = self.point(position, elevation)
+        return target.blit(image, (round(x - anchor[0] * self.scale), round(y - anchor[1] * self.scale)))
 
     def draw(self, target, actors=(), *, grid=False, oven_lit=True, labels=True):
         clip = target.get_clip()
@@ -52,9 +60,10 @@ class SceneView:
                 sprite = self.oven.frame_id if oven_lit else "oven_off"
             else:
                 sprite = obj["sprite"]
-            self.sprite(target, sprite, obj["position"], obj.get("elevation", 0))
+            alpha = obj.get("alpha", 1.0)
+            self.sprite(target, sprite, obj["position"], obj.get("elevation", 0), alpha)
             if obj.get("carrying"):
-                self.sprite(target, obj["carrying"], obj["position"], 18)
+                self.sprite(target, obj["carrying"], obj["position"], 18, alpha)
         if labels:
             for label in self.scene.get("labels", []):
                 text = self.label_font.render(label["text"], True, "#f3dfb6")

@@ -58,12 +58,13 @@ class Animator:
             self.clip = clip
             self.elapsed_ms = 0.0
 
-    def update(self, delta_ms):
+    def update(self, delta_ms, rate=1.0):
+        """Advance by ``delta_ms``; ``rate`` > 1 plays faster (a walk cycle keeping up with a hurrying character)."""
         if delta_ms < 0:
             raise ValueError("Animation delta cannot be negative")
         data = self.pack.animations[self.clip]
         total = sum(data["durations_ms"])
-        elapsed = self.elapsed_ms + delta_ms
+        elapsed = self.elapsed_ms + delta_ms * rate
         self.elapsed_ms = elapsed % total if data["loop"] else min(elapsed, total - 0.001)
 
     @property
