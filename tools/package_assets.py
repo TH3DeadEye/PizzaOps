@@ -6,7 +6,7 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = "PizzaOps_Cozy_Isometric_Asset_Pack_v1"
+NAME = "PizzaOps_Cozy_Isometric_Asset_Pack_v2"
 
 
 def package(destination):
@@ -16,7 +16,8 @@ def package(destination):
     paths = [path for path in (ROOT / "assets" / "pizzaops").rglob("*") if path.is_file()]
     paths.extend(ROOT / relative for relative in (
         "README.md", "ASSET_LICENSE.md", "CODE_LICENSE.md", "requirements.txt",
-        "viewer/main.py", "viewer/assets.py", "viewer/asset_demo.py", "tests/test_assets.py",
+        "viewer/assets.py", "viewer/asset_demo.py", "viewer/geometry.py", "viewer/layout.py", "viewer/scene.py", "tests/test_assets.py",
+        "ROOMS.md", "tools/build_rooms.py", "tools/render_rooms.py",
         "tools/build_assets.py", "tools/validate_assets.py", "tools/package_assets.py",
     ))
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zipped:

@@ -6,6 +6,7 @@ them: a FAILED order gets an apology, never a cheerful "order up".
 """
 
 import random
+import re
 
 MOODS = ("CALM", "TENSE", "SUSPICIOUS", "FURIOUS")
 TRAITS = ("patient", "impatient", "chatty")
@@ -92,7 +93,7 @@ STOCK_WORKER = {
         "AUTHORITATIVE": ["Counted it just now.", "Fresh numbers, straight off the shelf.", "Here's the real count."],
         "CACHED": ["Here's the sheet. From... earlier.", "Numbers from the clipboard. Should be fine.", "I counted recently. Recently-ish.", "Probably still accurate."],
     },
-    "RESERVATION_SUCCEEDED": ["Set aside for order {short_order}.", "Reserved. Off the shelf it goes.", "Got it. Marking it down.", "Taken off the shelf, as asked."],
+    "RESERVATION_SUCCEEDED": ["Set aside for {name}'s {pizza}.", "Reserved. Off the shelf it goes.", "Got it. Marking it down.", "Taken off the shelf, as asked."],
     "RESERVATION_REJECTED": ["Can't. We're short on {missing}.", "Not enough {missing}. Sorry.", "The shelf says no {missing}.", "Nope. {missing} ran out."],
     "STOCK_RESTOCKED": ["Delivery! Shelves are fuller.", "Restocked. Happy now?", "Fresh crates in the back.", "More {ingredient}, as requested."],
     "FAULT_CONFIG_CHANGED": {
@@ -102,6 +103,9 @@ STOCK_WORKER = {
         "clear": ["Fine, FINE, I'll count properly.", "Back to normal. Real counts.", "Shelf's in order again."],
     },
     "SERVICE_STARTED": ["Storeroom's open.", "Morning. Crates are where I left them.", "Back room's ready."],
+    # Caught out by the chef at the stockroom door (a stale-stock contradiction).
+    "STANDOFF": ["The sheet said plenty! It's... an older sheet.", "I counted. Earlier. Ish.",
+                 "Those were this morning's numbers.", "Okay, okay. I'll count for real."],
 }
 
 CASHIER = {
@@ -154,6 +158,21 @@ CUSTOMER = {
 }
 
 
+NAMES = ("Sam", "Alex", "Robin", "Kai", "Noor", "Rafi", "Jo", "Rowan", "Sasha", "Remy", "Ari", "Max",
+         "Charlie", "Jules", "Pat", "Toni", "Nico", "Dani", "Kim", "Lou", "Mika", "Ash", "Billie", "Frankie")
+
+
+def customer_name(customer):
+    """A friendly first name for a customer record, stable for its ID, so live and replay agree."""
+    if not customer:
+        return None
+    key = customer.get("id") or customer.get("appearance")
+    return random.Random(str(key)).choice(NAMES) if key else None
+
+
+SENTENCE_START = re.compile(r"(^|[.!?]\s+)([a-z])")
+
+
 class _Forgiving(dict):
     def __missing__(self, key):
         return "..."
@@ -175,7 +194,8 @@ def fill(text, **values):
              "name": "you", "short_order": "????"}
     words.update({key: value for key, value in values.items() if value is not None})
     words["pizza"] = str(words["pizza"]).lower()
-    return text.format_map(_Forgiving(words))
+    # "{pizza}, 2 of them." must still read as a sentence: "Pepperoni, 2 of them."
+    return SENTENCE_START.sub(lambda match: match.group(1) + match.group(2).upper(), text.format_map(_Forgiving(words)))
 
 
 def chef_line(event_type, payload, mood, seed, **values):
@@ -204,16 +224,18 @@ def stock_worker_line(event_type, payload, seed, **values):
         table = table.get(payload.get("source"), table["AUTHORITATIVE"])
     elif event_type == "FAULT_CONFIG_CHANGED":
         faults = payload.get("faults") or {}
-        if faults.get("staleStockEnabled"):
-            table = table["stale"]
-        elif faults.get("failureMode") not in (None, "NONE"):
+        # The most disruptive condition is the news: closed, then slow, then counting from an old sheet.
+        if faults.get("failureMode") not in (None, "NONE"):
             table = table["failing"]
         elif faults.get("delayMs"):
             table = table["slow"]
+        elif faults.get("staleStockEnabled"):
+            table = table["stale"]
         else:
             table = table["clear"]
     elif event_type == "RESERVATION_REJECTED":
-        values["missing"] = first_name(payload.get("items"))
+        # ``missing`` is the real shortfall; older recordings only carry the requested ``items``.
+        values["missing"] = first_name(payload.get("missing") or payload.get("items"))
     elif event_type == "STOCK_RESTOCKED":
         values["ingredient"] = first_name(payload.get("added"))
     text = pick(table, seed)

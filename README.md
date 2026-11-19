@@ -1,4 +1,27 @@
-# PizzaOps — Cozy Isometric Asset Pack
+# PizzaOps
+
+A cozy isometric pizzeria where every customer, argument and failed order is a real HTTP event between three services.
+
+## Play
+
+```sh
+uv run python scripts/play.py                  # Friday night (seed 7); --scenario calm for an easy evening
+uv run python -m viewer --mode replay --recording assets/game/demo/friday.jsonl   # no services needed
+```
+
+One command starts Order, Kitchen and Inventory with a show profile (10 s bake, one cook, deadlines long enough for a queue), an autopilot that runs the shift, and the viewer. Friday night brings a stale stock sheet, a pepperoni shortage, a short outage, a rush and a slow storeroom. The chef gets fooled by the old sheet until his trust drops below 50 and he counts the shelves himself.
+
+| Key | Does |
+| --- | --- |
+| Mouse wheel / Z | zoom 1× or 2× at the cursor |
+| Arrows, WASD, right-drag | pan; C recenters |
+| Space, + / - | pause, playback speed |
+| M, L | mute, lighting |
+| F1 | debug overlay: raw events, trace IDs, feed cursors |
+
+The stage acts events out and may trail the truth by a few seconds so hand-offs happen in order. The sidebar (chef, pantry, tickets) and the story strip show each result the moment it arrives. Text uses Pixelify Sans (SIL OFL); every sound is synthesised by `tools/build_audio.py`. Record your own shift with `uv run python -m tools.record_demo` and take screenshots of one with `uv run python -m tools.capture_show --at 60,140`.
+
+## The asset pack
 
 Original modular restaurant artwork, individual transparent PNGs, animation strips, metadata, and an offline Pygame showcase. No backend services are required to inspect the pack.
 
@@ -16,7 +39,14 @@ Or use the existing environment directly:
 .venv/bin/python -m viewer.main
 ```
 
-The viewer currently demonstrates artwork and movement only; it does not read service events or claim that any orders have completed.
+The default view is an offline room preview. Use keys **1–7** to see the connected restaurant, kitchen, stockroom, pickup area, dining room, patio, and staff lounge. Live mode reads the running services; replay mode uses a saved recording.
+
+```sh
+uv run python -m viewer --mode demo --room kitchen
+uv run python -m viewer --mode demo --room patio
+```
+
+The main restaurant now has four connected rooms with separate flooring, cutaway partitions, and doorways. Service-driven characters follow walkable tile routes around furniture. Status panels sit beside the scene. See [ROOMS.md](ROOMS.md) for layouts and editing instructions.
 
 ## Run the services
 
@@ -41,7 +71,7 @@ curl -s "${H[@]}" http://127.0.0.1:8082/stock | jq .items
 curl -s "${H[@]}" http://127.0.0.1:8081/mood
 ```
 
-The order is `RECEIVED` at once and `READY` a few seconds later (Kitchen cooks for `KITCHEN_COOKING_S`, default 3 s). Repeating the same `POST` returns the same order with `200`; stopping Kitchen makes the next order `FAILED` with `KITCHEN_UNAVAILABLE` instead of hanging. Each service prints one JSON line per event; `grep <traceId>` across the three outputs follows one order through all of them. Settings are environment variables (`ORDER_KITCHEN_URL`, `ORDER_MENU`, `ORDER_WORKERS`, `KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`; `tests/test_p0_acceptance.py` starts all three services as real processes.
+The order is `RECEIVED` at once and `READY` moments later (Kitchen cooks for `KITCHEN_COOKING_S`, default 0.25 s). Repeating the same `POST` returns the same order with `200`; stopping Kitchen makes the next order `FAILED` with `KITCHEN_UNAVAILABLE` instead of hanging. Each service prints one JSON line per event; `grep <traceId>` across the three outputs follows one order through all of them. Settings are environment variables (`ORDER_KITCHEN_URL`, `ORDER_MENU`, `ORDER_WORKERS`, `KITCHEN_INVENTORY_URL`, `KITCHEN_WORKERS`, `KITCHEN_COOKING_S`, `KITCHEN_ATTEMPT_TIMEOUT_S`, `INVENTORY_MAX_QUANTITY`, ...); defaults live in each service's `settings.py`. Run the tests with `uv run pytest`; `tests/test_p0_acceptance.py` starts all three services as real processes.
 
 ## Run the restaurant
 
@@ -68,7 +98,7 @@ uv run python -m viewer --mode demo
 
 ## Run the standalone ZIP
 
-Unzip `PizzaOps_Cozy_Isometric_Asset_Pack_v1.zip`, open a terminal in its folder, and run:
+Unzip `PizzaOps_Cozy_Isometric_Asset_Pack_v2.zip`, open a terminal in its folder, and run:
 
 ```sh
 python -m pip install -r requirements.txt
@@ -77,7 +107,7 @@ python -m viewer.asset_demo
 
 Python 3.10+ is sufficient for this standalone pack. The existing PizzaOps project requires Python 3.13+. Only `pygame-ce` is needed at runtime; Pillow and other image-processing packages are not required. Do not install both `pygame` and `pygame-ce` in the same environment.
 
-Controls: **Space** pauses, **Tab** opens the animation studio, **G** toggles map coordinates, **+ / -** change integer zoom, and **Esc** exits. In the animation studio, **Left / Right** select an action and **Up / Down** select direction. The initial window fits the desktop where possible. `--scale 1` gives a 900 × 600 window.
+Controls: **1–7** select rooms, **Space** pauses, **Tab** opens the animation studio, **G** shows walkable and blocked tiles, **+ / -** change integer window scale, and **Esc** exits. In the animation studio, **Left / Right** select an action and **Up / Down** select direction. `--scale 1` gives a 1280 × 840 window. Small rooms use a consistent 2× sprite scale; the full restaurant uses 1×.
 
 ## What is included
 
@@ -102,12 +132,17 @@ assets/pizzaops/
   strips/             Character/action/direction.png; oven/lit.png
   atlases/            Convenience category sheets with 2px gutters
   manifest.json       Sprite dimensions, categories, anchors, bounds, atlas rectangles
-  scene.json          Editable 12 × 12 example floor plan and object positions
+  scene.json          Connected 16 × 16 restaurant, collisions and service destinations
+  rooms/              Six editable 8 × 8 room modules
   validation.json     Machine-readable validation results
   previews/           Restaurant, character gallery, and contact sheet
   source/             Original isolated generation sheets and provenance
 viewer/assets.py      AssetPack and Animator
 viewer/asset_demo.py  Standalone scene and animation studio
+viewer/scene.py       Shared room camera and depth-sorted drawing
+viewer/layout.py      Room loading and tile navigation
+tools/build_rooms.py  Rebuild all room layouts from the existing sprites
+tools/render_rooms.py Export screenshots of every room
 tools/build_assets.py Rebuild all runtime PNGs and metadata
 tools/validate_assets.py Check alpha, frames, sheets, and scene references
 ```
@@ -176,7 +211,7 @@ Floors draw first, then `ground` decor and `back` walls, then characters and obj
 
 Walls sit on rear tile edges: `wall_*_nw` along the map-x=0 boundary, `wall_*_ne` along map-y=0. The matching corner closes their intersection. Foundation sprites can be placed on the two visible front edges. All have explicit anchors; no automatic cropping is needed.
 
-To adapt the example, edit `floors`, `objects`, and `characters` in `scene.json`. `position` allows fractional tile coordinates. A `route` is a demonstration waypoint loop, not pathfinding. In the eventual observer, map real service events to actions and destinations; movement should remain presentation-only.
+To adapt a room, edit `floors`, `objects`, and `characters` in its JSON. `position` allows fractional tile coordinates for decor. `blocked` contains whole-tile furniture and partition footprints; `landmarks` in `scene.json` supplies the live staff stations, queue and entrance. The live observer routes through those tiles using four-direction movement. Offline `route` entries remain authored preview loops. Movement represents service events and does not decide order outcomes.
 
 ## Verification and rebuild
 
@@ -205,6 +240,6 @@ Run `python tools/package_assets.py` to rebuild the standalone ZIP and SHA-256 c
 - West-facing poses are mirrored from east-facing artwork, including lighting and handedness. Rear views exist for walking; other actions have two front-facing directions. No seated, eating, running, or eight-direction cycles are included.
 - Generated furniture uses an authored isometric perspective. The floor/wall geometry is mathematically 2:1; individual organic silhouettes and details are not CAD-perfect. Small hand-drawn variation remains between animation keyframes.
 - Work and carry props are part of their character frames. The same item types are also available separately for scene assembly; arms and clothes are not separate rig layers.
-- The demo uses offline movement, has no service integration, and does not implement collisions or pathfinding. Existing service scaffolds remain available for your own implementation.
+- The room preview uses offline movement. Live and replay modes use the connected restaurant and route around static furniture and walls. Actors do not avoid each other; queue overflow shares a lobby holding point. Patio and staff lounge are standalone room examples, not active service destinations.
 
 Artwork credits, usage permission, and source prompts are in `ASSET_LICENSE.md` and `assets/pizzaops/source/PROVENANCE.md`. The added loader, demo, builder, and tests have the permissive license in `CODE_LICENSE.md`; that license does not change the licensing of pre-existing project files.

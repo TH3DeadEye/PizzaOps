@@ -1,8 +1,8 @@
 {
   "status": "passed",
-  "sprites": 367,
+  "sprites": 370,
   "animations": 85,
-  "atlases": 7,
+  "atlases": 8,
   "categories": {
     "kitchen": 16,
     "dining": 16,
@@ -10,8 +10,10 @@
     "characters": 288,
     "tiles": 5,
     "architecture": 10,
-    "ui": 16
+    "ui": 16,
+    "environment": 3
   },
+  "scenes": 7,
   "checks": [
     "RGBA binary alpha",
     "individual PNG inventory",

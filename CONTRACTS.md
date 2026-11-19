@@ -203,6 +203,8 @@ Order payloads as implemented: every `ORDER_*` event carries the full order reco
 
 Kitchen payloads as implemented: every `COOK_*` event carries the full job record (entity = order ID, entity version = job version). `COOK_CHECKING` is the worker picking the job up; `COOK_STARTED` means the reservation is confirmed and the oven is on. `STOCK_CHECKED` is Kitchen's reading of Inventory's answer (`authoritative` requested, `source`, `sufficient`, `needed`, `available`, `missing`, `stockVersion`, `snapshotVersion`). `DEPENDENCY_TIMEOUT` covers every ambiguous loss (read timeout, broken connection, unexpected 5xx) and `DEPENDENCY_UNAVAILABLE` every known non-delivery (connection refused, connect timeout, 503); both carry `operation`, `attempt`, `code`, `message`, `status`. `MOOD_CHANGED` and `RELATIONSHIP_CHANGED` carry `before` and `after` mood states (entity `mood`, version = mood version) and, when an order triggered them, its order ID.
 
+Inventory payloads as implemented: `STOCK_READ` carries the stock response (`items`, `source`, `stockVersion`, `snapshotVersion`); `RESERVATION_SUCCEEDED` carries the reservation; `RESERVATION_REJECTED` carries `code`, the requested `items`, `stockVersion` and `missing`, the shortfall per ingredient (empty unless the code is `INSUFFICIENT_STOCK`); `STOCK_RESTOCKED` carries `commandId`, `added`, the resulting `items` and `stockVersion`; `FAULT_CONFIG_CHANGED` carries `commandId`, `faults` and the frozen `snapshotVersion` (or null).
+
 ## Failure mapping and reconciliation
 
 | Observation | Handling |

@@ -188,3 +188,17 @@ def test_snapshot_watermark_event_paging_and_retention():
             await store.events(store.instance_id, 5, 100)
         assert caught.value.code == "INVALID_CURSOR"
     asyncio.run(scenario())
+
+
+def test_rejection_event_names_the_missing_ingredient_not_just_the_request():
+    async def scenario():
+        store = InventoryStore(Settings(initial_stock=DEFAULT_STOCK | {"PEPPERONI": 2}))
+        with pytest.raises(InventoryError):
+            await store.reserve(reserve_request({"DOUGH": 3, "CHEESE": 3, "PEPPERONI": 3}), uuid4())
+        page = await store.events(store.instance_id, 0, 100)
+        rejected = [event for event in page.events if event.type == "RESERVATION_REJECTED"]
+        assert len(rejected) == 1
+        payload = rejected[0].payload.model_dump(by_alias=True)
+        assert payload["missing"] == {"PEPPERONI": 1}
+        assert payload["items"] == {"DOUGH": 3, "CHEESE": 3, "PEPPERONI": 3}
+    asyncio.run(scenario())

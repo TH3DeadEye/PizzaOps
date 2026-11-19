@@ -1,0 +1,398 @@
+{
+  "canvas": [
+    160,
+    192
+  ],
+  "anchor": [
+    80,
+    144
+  ],
+  "directions": [
+    "se",
+    "sw",
+    "ne",
+    "nw"
+  ],
+  "source_grid": [
+    2,
+    2
+  ],
+  "assets": [
+    {
+      "id": "service_counter",
+      "category": "service",
+      "width": 96,
+      "max_height": 68,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Straight walnut/cream guest counter; solid paneled front, open rear shelves."
+    },
+    {
+      "id": "prep_bench",
+      "category": "kitchen",
+      "width": 64,
+      "max_height": 60,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Walnut dough prep bench, cream stone worktop, two drawers above two doors on FRONT, plain wooden BACK; empty worktop.",
+      "source_order": [
+        "sw",
+        "se",
+        "ne",
+        "nw"
+      ]
+    },
+    {
+      "id": "topping_station",
+      "category": "kitchen",
+      "width": 64,
+      "max_height": 64,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Stainless refrigerated topping station with six inset colored ingredient trays, low glass sneeze guard, two refrigerated FRONT doors, plain ventilated BACK panel.",
+      "source_order": [
+        "sw",
+        "se",
+        "ne",
+        "nw"
+      ]
+    },
+    {
+      "id": "brick_oven",
+      "category": "kitchen",
+      "width": 96,
+      "max_height": 104,
+      "footprint": [
+        2,
+        2
+      ],
+      "description": "Terracotta brick dome pizza oven on square brick base, cream arched FRONT mouth with small glowing fire, wood-storage niche below, short chimney; BACK continuous brick dome/base with no openings."
+    },
+    {
+      "id": "boxing_bench",
+      "category": "kitchen",
+      "width": 64,
+      "max_height": 60,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Walnut cutting-and-boxing bench with butcher-block top, a recessed cutting board on top, open FRONT cubbies holding flat cream pizza boxes, plain walnut BACK."
+    },
+    {
+      "id": "wash_sink",
+      "category": "kitchen",
+      "width": 64,
+      "max_height": 64,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Compact stainless sink cabinet, one deep basin and arched faucet on rear rim, two FRONT cupboard doors, solid BACK; empty basin, no loose props."
+    },
+    {
+      "id": "stand_mixer",
+      "category": "kitchen",
+      "width": 22,
+      "max_height": 27,
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "description": "Small cream countertop stand mixer with steel bowl and walnut control knob; four actual rotational views, rear motor housing distinguishable from bowl-front. Standalone appliance, no table."
+    },
+    {
+      "id": "vent_hood",
+      "category": "kitchen",
+      "width": 64,
+      "max_height": 60,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Stainless trapezoid pizza oven extraction hood with short upright exhaust flue, open dark lower intake, small FRONT controls and plain BACK. Isolated wall/ceiling fixture, no wall or oven."
+    },
+    {
+      "id": "pickup_cubby",
+      "category": "service",
+      "width": 64,
+      "max_height": 74,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Freestanding walnut pickup cabinet with six square FRONT cubbies, a few cream paper takeaway bags inside; solid paneled BACK. Flat top, no countertop beneath, no labels."
+    },
+    {
+      "id": "drinks_fridge",
+      "category": "service",
+      "width": 40,
+      "max_height": 80,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Tall narrow sage drinks cooler with one transparent FRONT glass door displaying three rows of colorful drink bottles and brass handle; BACK has black condenser grille, sides solid sage."
+    },
+    {
+      "id": "waiting_bench",
+      "category": "service",
+      "width": 80,
+      "max_height": 53,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Two-seat sage upholstered waiting bench, low walnut arms and simple legs, one cream cushion. FRONT shows seat cushions; BACK shows plain walnut backing."
+    },
+    {
+      "id": "register",
+      "category": "service",
+      "width": 24,
+      "max_height": 28,
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "description": "Small sage cash register with cream square keys and dark display on FRONT, walnut cash drawer below, plain sage BACK with small customer display; standalone, no counter."
+    },
+    {
+      "id": "booth_straight",
+      "category": "dining",
+      "width": 80,
+      "max_height": 57,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Two-seat sage tufted restaurant booth module, walnut plinth, no arms, tall straight upholstered backrest. FRONT shows seat cushion and tufting; BACK plain walnut panel. No table."
+    },
+    {
+      "id": "booth_corner",
+      "category": "dining",
+      "width": 62,
+      "max_height": 65,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Single compact modular ninety-degree inner CORNER sage restaurant booth seat with two perpendicular upholstered backrests and walnut plinth, no loose pillows or table. Four genuine rotations; two backrest planes visibly change with orientation."
+    },
+    {
+      "id": "dining_chair",
+      "category": "dining",
+      "width": 28,
+      "max_height": 43,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "One walnut bentwood dining chair, sage upholstered seat, four slender legs, curved open loop backrest. Four genuine orientations: TOP row seating front visible, BOTTOM row backs of backrests visible."
+    },
+    {
+      "id": "dining_table",
+      "category": "dining",
+      "width": 58,
+      "max_height": 48,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Small square walnut dining table with one sturdy central pedestal and four splayed feet, EMPTY tabletop, tiny cream napkin folded near one corner as rotation cue. Four consistent rotations."
+    },
+    {
+      "id": "water_sideboard",
+      "category": "dining",
+      "width": 64,
+      "max_height": 63,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Walnut dining sideboard with two FRONT cupboard doors and drawers, two clear water carafes and three glasses on top, plain walnut BACK. Contents remain attached to top in every view."
+    },
+    {
+      "id": "dish_return",
+      "category": "dining",
+      "width": 34,
+      "max_height": 56,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Narrow walnut used-dish return cabinet with recessed grey bus tub in top and two FRONT open shelves with neatly stacked cream dishes; solid BACK panel."
+    },
+    {
+      "id": "wire_shelf",
+      "category": "storage",
+      "width": 64,
+      "max_height": 80,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Sage metal wire shelving bay with three levels: flour sacks bottom, tomato cans middle, cream pizza boxes top. Open FRONT, X-shaped metal cross-braces on BACK. Same load seen from four sides, no loose ground items."
+    },
+    {
+      "id": "chest_freezer",
+      "category": "storage",
+      "width": 64,
+      "max_height": 53,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Cream commercial chest freezer with closed hinged lid, small horizontal FRONT handle and black feet, BACK hinge rail and small vent. No open variants."
+    },
+    {
+      "id": "flour_bin",
+      "category": "storage",
+      "width": 26,
+      "max_height": 37,
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "description": "Cream rectangular wheeled food storage bin with sloped closed lid, recessed FRONT grip, subtle flour grain icon on FRONT only, four dark casters; plain BACK."
+    },
+    {
+      "id": "delivery_trolley",
+      "category": "storage",
+      "width": 30,
+      "max_height": 54,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Rust red two-wheel hand truck, empty, curved handles, narrow steel frame, low toe plate on FRONT and two black rubber wheels at rear. Four real rotations; no crates."
+    },
+    {
+      "id": "outdoor_table",
+      "category": "patio",
+      "width": 52,
+      "max_height": 48,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Small round sage metal bistro table with simple radial lattice tabletop and three sturdy metal feet; EMPTY, no umbrella or chairs."
+    },
+    {
+      "id": "outdoor_chair",
+      "category": "patio",
+      "width": 28,
+      "max_height": 42,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Sage metal patio chair with walnut horizontal seat/back slats and thin dark metal frame, four legs. Four real rotations with rear-facing backs on bottom row."
+    },
+    {
+      "id": "patio_umbrella",
+      "category": "patio",
+      "width": 96,
+      "max_height": 92,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Sage-and-cream striped eight-panel patio umbrella, slim centered brass pole and small heavy round bronze ground base, no table/chairs. Four rotations consistent stripes and fixed upper-left light; canopy no larger than 2 tiles.",
+      "ground_width": 18
+    },
+    {
+      "id": "planter_divider",
+      "category": "patio",
+      "width": 80,
+      "max_height": 46,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Long low rectangular terracotta planter divider with three compact green herb shrubs, pale sage leaf motif only on FRONT, plain terracotta BACK; same plants and container in four rotations."
+    },
+    {
+      "id": "iron_fence",
+      "category": "patio",
+      "width": 88,
+      "max_height": 47,
+      "footprint": [
+        0.5,
+        2
+      ],
+      "description": "One low freestanding wrought-iron fence section between two narrow terracotta brick end posts, brass post caps, repeating vertical bars, no gate, no floor. Four rotations, same construction."
+    },
+    {
+      "id": "striped_awning",
+      "category": "patio",
+      "width": 88,
+      "max_height": 50,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Sage-and-cream striped retractable fabric awning with scalloped FRONT valance and two walnut/metal BACK mounting brackets, standalone wall-mounted fixture, no wall or building. Bottom row shows rear mounting beam rather than repeated front."
+    },
+    {
+      "id": "staff_locker",
+      "category": "staff",
+      "width": 28,
+      "max_height": 77,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Single tall sage metal staff locker, FRONT door with vents and brass handle on right, flat solid BACK with seam, four short feet. One locker only."
+    },
+    {
+      "id": "office_desk",
+      "category": "staff",
+      "width": 80,
+      "max_height": 59,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Walnut office desk, left three-drawer pedestal and right open knee space on FRONT, solid modesty panel on BACK, small cream ledger on desktop. No chair or monitor attached, drawer layout preserved across true rotations."
+    },
+    {
+      "id": "staff_sofa",
+      "category": "staff",
+      "width": 80,
+      "max_height": 57,
+      "footprint": [
+        1,
+        2
+      ],
+      "description": "Compact two-seat rust upholstered sofa with walnut short feet and arms, one cream striped pillow. FRONT seat cushions visible, BACK plain rust upholstered back panel, same pillow rotates with sofa."
+    },
+    {
+      "id": "kettle_counter",
+      "category": "staff",
+      "width": 44,
+      "max_height": 60,
+      "footprint": [
+        1,
+        1
+      ],
+      "description": "Small walnut staff kitchenette cabinet with cream mini-fridge FRONT door below, cream electric kettle and two mugs on top, plain wooden BACK with small cable slot."
+    },
+    {
+      "id": "service_hatch",
+      "category": "architecture",
+      "width": 64,
+      "max_height": 67,
+      "footprint": [
+        0.5,
+        2
+      ],
+      "description": "Standalone walnut-framed rectangular service pass window module with wide open transparent center, cream stone sill projecting from FRONT and slender plain BACK trim, no wall panel, no building. Four rotations; whole surrounding area and opening fully transparent."
+    }
+  ]
+}

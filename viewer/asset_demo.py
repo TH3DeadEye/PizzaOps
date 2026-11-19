@@ -1,7 +1,6 @@
 """Standalone offline asset showcase. No service requests or simulated outcomes."""
 
 import argparse
-import json
 import os
 from pathlib import Path
 
@@ -10,8 +9,9 @@ import pygame
 
 from viewer.assets import Animator, AssetPack, DEFAULT_ASSET_ROOT
 from viewer.geometry import depth_key, direction_for, move_actor, project, unproject  # noqa: F401  (public helpers)
+from viewer.layout import ROOM_NAMES, load_scene
+from viewer.scene import SceneView, SIZE, PANEL_X
 
-SIZE = (900, 600)
 INK = "#49343b"
 CREAM = "#f3dfb6"
 CHARACTERS = ["chef", "cashier", "stock_worker", "customer_amber", "customer_teal", "customer_lavender"]
@@ -19,10 +19,8 @@ ACTIONS = ["idle", "walk", "work", "carry", "talk", "frustrated"]
 
 
 class Showcase:
-    def __init__(self, pack):
+    def __init__(self, pack, room="restaurant"):
         self.pack = pack
-        self.scene = json.loads((pack.root / "scene.json").read_text())
-        self.characters = self.scene["characters"]
         self.font = pygame.font.Font(None, 19)
         self.small = pygame.font.Font(None, 16)
         self.title = pygame.font.Font(None, 34)
@@ -33,10 +31,17 @@ class Showcase:
         self.gallery_action = 1
         self.gallery_direction = "se"
         self.gallery_clips = [Animator(pack, f"{name}/walk/se") for name in CHARACTERS]
+        self.select_room(room)
+
+    def select_room(self, room):
+        self.room = room
+        self.scene = load_scene(self.pack.root, room)
+        self.view = SceneView(self.pack, self.scene)
+        self.characters = self.scene["characters"]
         for actor in self.characters:
-            actor["animator"] = Animator(pack, f"{actor['character']}/{actor['action']}/{actor['direction']}")
+            actor["animator"] = Animator(self.pack, f"{actor['character']}/{actor['action']}/{actor['direction']}")
             actor["route_index"] = 1
-        self.oven = Animator(pack, "oven/lit")
+        self.oven = self.view.oven
 
     def update(self, delta_ms):
         if self.paused:
@@ -60,45 +65,43 @@ class Showcase:
 
     def draw(self, target):
         target.fill("#302c32")
-        pygame.draw.rect(target, "#24272c", (0, 0, SIZE[0], 70))
+        pygame.draw.rect(target, "#24272c", (0, 0, SIZE[0], 72))
         self.text(target, "PIZZAOPS", (22, 15), self.title)
-        self.text(target, "THE COZY RESTAURANT COLLECTION", (192, 29), self.small, "#c8ad8d")
-        self.text(target, "OFFLINE ASSET SHOWCASE", (697, 19), self.small, "#9db59a")
-        self.text(target, "6 characters / 4 walk directions", (697, 36), self.small)
+        self.text(target, self.scene["title"].upper(), (192, 23), self.font, "#c8ad8d")
+        self.text(target, "OFFLINE ROOM PREVIEW", (1050, 19), self.small, "#9db59a")
+        self.text(target, "1 restaurant / 6 room types", (1050, 38), self.small)
+        self.text(target, "1-7 choose a room   TAB character animations", (22, 51), self.small, "#c8ad8d")
         if self.gallery:
             self.draw_gallery(target)
         else:
             self.draw_scene(target)
-        pygame.draw.rect(target, "#24272c", (0, 560, SIZE[0], 40))
-        self.text(target, "SPACE pause   TAB gallery   G grid   +/- zoom   ESC quit", (20, 570), self.small)
-        self.text(target, "PAUSED" if self.paused else "ANIMATING", (802, 570), self.small, "#9db59a")
+        pygame.draw.rect(target, "#24272c", (0, 778, SIZE[0], 62))
+        self.text(target, "SPACE pause   G walking grid   +/- window scale   ESC quit", (20, 790), self.small)
+        self.text(target, "Rooms are assembled from individual sprites. Preview movement only.", (20, 812), self.small, "#c8ad8d")
+        self.text(target, "PAUSED" if self.paused else "ANIMATING", (1160, 790), self.small, "#9db59a")
 
     def draw_scene(self, target):
-        origin = self.scene["origin"]
-        for tile in sorted(self.scene["floors"], key=depth_key):
-            point = project(tile["position"], origin)
-            self.pack.draw(target, tile["sprite"], point)
-            if self.grid:
-                self.text(target, f"{tile['position'][0]},{tile['position'][1]}", (point[0] - 7, point[1] - 3), self.small, INK)
-        for obj in self.scene["objects"]:
-            if obj.get("layer") in ("ground", "back"):
-                self.pack.draw(target, obj["sprite"], project(obj["position"], origin, obj.get("elevation", 0)))
-        drawables = [obj for obj in self.scene["objects"] if obj.get("layer") not in ("ground", "back")]
-        drawables += self.characters
-        for obj in sorted(drawables, key=depth_key):
-            if "animator" in obj:
-                sprite = obj["animator"].frame_id
-            elif obj.get("animation"):
-                sprite = self.oven.frame_id
+        actors = [{"position": a["position"], "sprite": a["animator"].frame_id} for a in self.characters]
+        self.view.draw(target, actors, grid=self.grid)
+        pygame.draw.rect(target, "#24272c", (PANEL_X - 6, 88, 224, 674), border_radius=8)
+        self.text(target, "ROOM PURPOSE", (PANEL_X + 10, 108), self.font, "#9db59a")
+        y, line = 140, ""
+        for word in self.scene["purpose"].split():
+            trial = f"{line} {word}".strip()
+            if self.small.size(trial)[0] > 192:
+                self.text(target, line, (PANEL_X + 10, y), self.small)
+                line, y = word, y + 20
             else:
-                sprite = obj["sprite"]
-            self.pack.draw(target, sprite, project(obj["position"], origin, obj.get("elevation", 0)))
-        self.pack.draw(target, "ui_panel", (20, 86))
-        self.text(target, "LITTLE SLICE / 01", (31, 97), self.font, INK)
-        self.text(target, "Kitchen + dining", (31, 121), self.small, INK)
-        self.text(target, "64 x 32 modular tiles", (31, 140), self.small, INK)
-        self.text(target, "TAB: animations", (31, 158), self.small, INK)
-        self.text(target, "Preview movement only. Connect your events when ready.", (20, 538), self.small, "#b8a99b")
+                line = trial
+        self.text(target, line, (PANEL_X + 10, y), self.small)
+        for index, room in enumerate(ROOM_NAMES):
+            y = 300 + index * 42
+            if room == self.room:
+                pygame.draw.rect(target, "#454139", (PANEL_X + 4, y - 8, 208, 34), border_radius=4)
+            self.text(target, f"{index + 1}  {room.title()}", (PANEL_X + 14, y), self.font,
+                      CREAM if room == self.room else "#a69b93")
+        self.text(target, "Green: walkable / Red: solid", (PANEL_X + 10, 710), self.small, "#c8ad8d")
+        self.text(target, "G toggles the walking grid", (PANEL_X + 10, 732), self.small, "#c8ad8d")
 
     def draw_gallery(self, target):
         action = ACTIONS[self.gallery_action]
@@ -129,6 +132,7 @@ def main(argv=None):
     parser.add_argument("--scale", type=int, choices=(1, 2, 3), default=2)
     parser.add_argument("--atlas", action="store_true")
     parser.add_argument("--gallery", action="store_true")
+    parser.add_argument("--room", choices=ROOM_NAMES, default="restaurant")
     args = parser.parse_args(argv)
     if args.frames < 0:
         parser.error("--frames must be nonnegative")
@@ -143,7 +147,7 @@ def main(argv=None):
     window = pygame.display.set_mode((SIZE[0] * scale, SIZE[1] * scale))
     pygame.display.set_caption("PizzaOps - Cozy Asset Showcase")
     canvas = pygame.Surface(SIZE)
-    demo = Showcase(AssetPack(args.assets, use_atlas=args.atlas))
+    demo = Showcase(AssetPack(args.assets, use_atlas=args.atlas), room=args.room)
     demo.gallery = args.gallery
     clock = pygame.time.Clock()
     running = True
@@ -163,6 +167,9 @@ def main(argv=None):
                     demo.gallery = not demo.gallery
                 elif event.key == pygame.K_g:
                     demo.grid = not demo.grid
+                elif pygame.K_1 <= event.key <= pygame.K_7:
+                    demo.select_room(ROOM_NAMES[event.key - pygame.K_1])
+                    demo.gallery = False
                 elif event.key in (pygame.K_RIGHT, pygame.K_LEFT):
                     demo.gallery_action = (demo.gallery_action + (1 if event.key == pygame.K_RIGHT else -1)) % len(ACTIONS)
                 elif event.key in (pygame.K_UP, pygame.K_DOWN):

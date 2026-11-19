@@ -258,45 +258,11 @@ def atlases():
 
 
 def scene():
-    objects = []
-    def add(sprite, position, **extra):
-        objects.append({"sprite": sprite, "position": position, **extra})
-    for index in range(12):
-        add("wall_brick_nw", [0, index], layer="back")
-    for index in range(1, 12):
-        add("wall_cream_ne", [index, 0], layer="back")
-    add("corner_inner", [0, 0], layer="back")
-    for sprite, position in [
-        ("oven_lit_0", [1.4, 2]), ("prep_counter", [1.4, 4.2]), ("topping_station", [1.4, 6.1]),
-        ("sink_counter", [1.4, 8.1]), ("storage_shelf", [3.5, 1]), ("fridge", [5.2, 1]),
-        ("crate_tomatoes", [7.2, 1]), ("crate_cheese", [8.4, 1]), ("crate_flour", [9.6, 1]),
-        ("service_counter", [4.6, 5.2]), ("pizza_display", [4.6, 7.2]),
-        ("table_square", [7.5, 4.3]), ("table_round", [9.5, 7.5]),
-        ("chair_sw", [8.5, 4.3]), ("chair_se", [7.5, 5.4]),
-        ("chair_se", [9.5, 8.6]), ("chair_sw", [10.6, 7.5]),
-        ("booth", [9, 2]), ("olive_tree", [11, 1]), ("floor_lamp", [6.2, 2]),
-        ("plant", [10.8, 10.5]), ("menu_stand", [5.5, 10.7]), ("trash_bin", [0.8, 10.7]),
-    ]:
-        add(sprite, position, animation="oven/lit" if sprite.startswith("oven_lit") else None)
-    add("register", [4.6, 5.2], elevation=34, depth_bias=0.01)
-    add("pizza_pepperoni", [7.5, 4.3], elevation=33, depth_bias=0.01)
-    add("rug", [6.8, 9.4], layer="ground")
-    add("window", [0.2, 5.7], elevation=35, layer="back")
-    add("menu_board", [6.5, 0.1], elevation=32, layer="back")
-    add("wall_clock", [3, 0.1], elevation=49, layer="back")
-    characters = [
-        {"character": "chef", "position": [2.8, 3.7], "action": "work", "direction": "sw"},
-        {"character": "cashier", "position": [3.4, 5.2], "action": "talk", "direction": "se"},
-        {"character": "stock_worker", "position": [6.5, 1.7], "action": "work", "direction": "se"},
-        {"character": "customer_amber", "position": [5.7, 5.3], "action": "idle", "direction": "sw"},
-        {"character": "customer_teal", "position": [8.1, 7.4], "action": "talk", "direction": "se"},
-        {"character": "customer_lavender", "position": [3.2, 9.4], "action": "walk", "direction": "se",
-         "route": [[3.2, 9.4], [8.6, 9.4], [8.6, 10.5], [3.2, 10.5]]},
-    ]
-    layout = {"schema_version": 1, "size": [12, 12], "tile_size": [64, 32], "origin": [414, 152],
-              "floors": [{"position": [tile_x, tile_y], "sprite": "floor_checker" if tile_x < 4 else "floor_terracotta"}
-                         for tile_x in range(12) for tile_y in range(12)], "objects": objects, "characters": characters}
-    (ROOT / "scene.json").write_text(json.dumps(layout, indent=2) + "\n")
+    if __package__:
+        from .build_rooms import main as build_rooms
+    else:
+        from build_rooms import main as build_rooms
+    build_rooms()
 
 
 def contact_sheet():

@@ -183,6 +183,7 @@ Nothing here is controlled by you.
 - **Dialogue:** a function takes (event, the speaker's mood, their relationship to the other speaker) and picks an authored line. Start with 5 to 10 lines per mood. Make the text funny before you draw anything nice. An LLM could replace this function later, at the same seam, but is a non-goal for v1.
 - **Optional ambient stats:** a reputation bar or served/failed counters can be shown for flavour. They don't steer anything.
 - **Allowed viewer controls:** pause, speed, choose the seed.
+- **Update (2026-11-19):** the autopilot exists (`autopilot/`, one command: `scripts/play.py`), and the viewer now acts events out on a stage that may trail the truth by up to about 8 s so hand-offs happen in order, without ever changing a result. The viewer also has camera, sound and lighting controls; none of them steer the services. The next direction under discussion is a real game layer where the player acts as the restaurant's operator through the same admin endpoints the autopilot uses.
 
 ### 2.10 Target API contracts (from the proposal, plus `/events`)
 

@@ -44,3 +44,35 @@ def test_unknown_events_are_silent_and_fill_is_forgiving():
     assert "pizza" in fill("a {pizza}") and "..." in fill("missing {nope}")
     assert first_name({"PEPPERONI": 2, "DOUGH": 1}) == "pepperoni"
     assert first_name({}) == "ingredients"
+
+
+def _templates(table):
+    if isinstance(table, str):
+        yield table
+    elif isinstance(table, dict):
+        for value in table.values():
+            yield from _templates(value)
+    else:
+        for value in table:
+            yield from _templates(value)
+
+
+def test_stock_worker_names_the_ingredient_that_actually_ran_out():
+    payload = {"code": "INSUFFICIENT_STOCK", "items": {"DOUGH": 3, "CHEESE": 3, "PEPPERONI": 3}, "missing": {"PEPPERONI": 1}}
+    lines = {stock_worker_line("RESERVATION_REJECTED", payload, f"s{n}") for n in range(12)}
+    assert all("pepperoni" in line.lower() and "dough" not in line.lower() for line in lines)
+    # Recordings made before ``missing`` existed still produce a line.
+    assert stock_worker_line("RESERVATION_REJECTED", {"items": {"CHEESE": 2}}, "old")
+
+
+def test_no_line_can_show_an_order_id_and_customers_get_stable_names():
+    from viewer import dialogue
+    for table in (dialogue.CHEF, dialogue.STOCK_WORKER, dialogue.CASHIER, dialogue.CUSTOMER):
+        assert not [text for text in _templates(table) if "{short_order}" in text]
+    lines = {stock_worker_line("RESERVATION_SUCCEEDED", {}, f"s{n}", name="Robin", pizza="CHEESE", short_order="5f613e14")
+             for n in range(20)}
+    assert not any("5f613e14" in line for line in lines) and any("Robin" in line for line in lines)
+    customer = {"id": "0a6c2d7e-1b1f-4c55-9f19-3b7d2a1e9c11", "appearance": "customer_teal"}
+    assert dialogue.customer_name(customer) == dialogue.customer_name(dict(customer)) in dialogue.NAMES
+    assert len({dialogue.customer_name({"id": f"id-{n}"}) for n in range(40)}) > 5
+    assert dialogue.customer_name(None) is None

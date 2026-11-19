@@ -37,14 +37,18 @@ def test_duplicate_events_are_applied_once():
     assert len(world.customers) == 1
 
 
-def test_ready_customer_leaves_with_a_box_failed_customer_leaves_empty_handed():
+def test_ready_customer_collects_a_box_failed_customer_leaves_empty_handed():
     world = World()
     received(world, appearance="customer_teal", trait="impatient")
     customer = world.customers[ORDER]
     world.apply(event("order", "ORDER_READY", 2, order_record(ORDER, status="READY", version=2, appearance="customer_teal"), ORDER))
-    assert customer.state == "leaving" and any(step[0] == "carry" and step[1] == "pizza_box" for step in customer.plan)
-    advance(world, 20)
-    assert ORDER not in world.customers
+    # READY, but no box has reached the counter yet: the customer waits rather than leaving with an invisible box.
+    assert customer.state == "collecting" and customer.carrying is None
+    carried = False
+    for _ in range(600):
+        world.tick(0.05)
+        carried = carried or customer.carrying == "pizza_box"
+    assert carried and ORDER not in world.customers
 
     other = str(uuid4())
     record = order_record(other, status="RECEIVED", appearance="customer_lavender")
@@ -52,7 +56,10 @@ def test_ready_customer_leaves_with_a_box_failed_customer_leaves_empty_handed():
     world.apply(event("order", "ORDER_FAILED", 4, {**record, "status": "FAILED", "version": 2, "failureReason": "INSUFFICIENT_STOCK"}, other))
     leaving = world.customers[other]
     assert leaving.state == "leaving" and leaving.carrying is None
-    assert any(step == ("act", "frustrated", 2.4, "sw") for step in leaving.plan)
+    world.tick(0.05)
+    assert leaving.action == "frustrated"
+    advance(world, 20)
+    assert other not in world.customers and leaving.carrying is None
 
 
 def test_snapshot_from_a_new_instance_replaces_that_service_and_leaves_the_others():
@@ -80,18 +87,21 @@ def test_stock_tracks_consecutive_reservations_and_marks_gaps_uncertain():
     assert world.stock_uncertain and world.stock["CHEESE"] == 28
 
 
-def test_chef_walks_to_the_oven_on_start_and_to_the_pass_when_the_pie_is_done():
+def test_chef_preps_bakes_and_sets_the_box_on_the_counter():
     world = World()
     chef = world.actors["chef"]
     home = chef.position
     world.apply(event("kitchen", "COOK_STARTED", 1, job_record(ORDER, status="COOKING", pizza="PEPPERONI"), ORDER))
-    assert chef.plan[0] == ("go", (2.4, 2.4))
+    advance(world, 0.1)
+    assert chef.action == "work"  # shaping dough at the prep counter first
     advance(world, 3)
-    assert chef.action == "work"
+    assert chef.position == pytest.approx(world.oven_spot, abs=0.05) and chef.action == "work"
     world.apply(event("kitchen", "COOK_COMPLETED", 2, job_record(ORDER, status="COOKED", version=2, pizza="PEPPERONI"), ORDER))
-    assert any(step == ("carry", "pizza_box") for step in chef.plan)
-    advance(world, 12)
+    advance(world, 1.0)
+    assert chef.carrying == "pizza_box"
+    advance(world, 20)  # the pass is reached through the kitchen doorway
     assert chef.carrying is None
+    assert ORDER in world.stage.props  # the box waits on the counter for its customer
     assert chef.position == pytest.approx(home, abs=0.05)
 
 

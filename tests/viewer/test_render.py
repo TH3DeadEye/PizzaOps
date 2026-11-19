@@ -51,3 +51,23 @@ def test_headless_live_loop_against_an_empty_feed(pack, tmp_path):
     assert loop(show, mode="live", headless=True, frames=12, screenshot=screenshot, scale=1) == 0
     assert screenshot.exists() and screenshot.stat().st_size > 0
     assert getattr(show.source, "stopped", False)
+
+
+def test_a_replay_waits_while_paused_and_follows_the_show_speed(pack, tmp_path):
+    from viewer.main import Playback
+    from viewer.feed import Replay
+    from viewer.updates import Status, dumps
+    recording = tmp_path / "shift.jsonl"
+    recording.write_text("".join(dumps(Status("order", "LIVE", None, at)) + "\n" for at in (10.0, 11.0, 12.0)))
+    playback = Playback()
+    show = Show(Replay(recording, now=playback), pack=pack, caption="REPLAY", playback=playback)
+    show.pump(16)
+    delivered = len(show.world.ticker)
+    show.paused = True
+    for _ in range(100):
+        show.pump(50)  # five seconds of paused wall time deliver nothing new
+    assert len(show.world.ticker) == delivered and playback() == 0.016
+    show.paused, show.speed = False, 4.0
+    show.pump(250)  # a quarter second at 4x is one second of recording...
+    show.pump(0)    # ...delivered on the next pump, which reads the clock first
+    assert playback() == pytest.approx(1.016) and show.source._index == 2
