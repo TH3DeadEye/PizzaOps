@@ -368,6 +368,1086 @@
           192
         ]
       }
+    },
+    "topping_station_sw": {
+      "file": "sprites/kitchen/topping_station_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        51,
+        96,
+        59,
+        63
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "topping_station",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 15,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          192,
+          160,
+          192
+        ]
+      }
+    },
+    "topping_station_se": {
+      "file": "sprites/kitchen/topping_station_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        51,
+        96,
+        59,
+        63
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "topping_station",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 15,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          192,
+          160,
+          192
+        ]
+      }
+    },
+    "topping_station_ne": {
+      "file": "sprites/kitchen/topping_station_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        51,
+        95,
+        59,
+        64
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "topping_station",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 15,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          192,
+          160,
+          192
+        ]
+      }
+    },
+    "topping_station_nw": {
+      "file": "sprites/kitchen/topping_station_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        51,
+        95,
+        59,
+        64
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "topping_station",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 15,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          192,
+          160,
+          192
+        ]
+      }
+    },
+    "brick_oven_se": {
+      "file": "sprites/kitchen/brick_oven_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        38,
+        63,
+        84,
+        102
+      ],
+      "footprint": [
+        2,
+        2
+      ],
+      "object": "brick_oven",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.5,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 21,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          384,
+          160,
+          192
+        ]
+      }
+    },
+    "brick_oven_sw": {
+      "file": "sprites/kitchen/brick_oven_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        38,
+        64,
+        84,
+        101
+      ],
+      "footprint": [
+        2,
+        2
+      ],
+      "object": "brick_oven",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.5
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 21,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          384,
+          160,
+          192
+        ]
+      }
+    },
+    "brick_oven_ne": {
+      "file": "sprites/kitchen/brick_oven_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        39,
+        61,
+        83,
+        104
+      ],
+      "footprint": [
+        2,
+        2
+      ],
+      "object": "brick_oven",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.5
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 21,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          384,
+          160,
+          192
+        ]
+      }
+    },
+    "brick_oven_nw": {
+      "file": "sprites/kitchen/brick_oven_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        39,
+        61,
+        83,
+        104
+      ],
+      "footprint": [
+        2,
+        2
+      ],
+      "object": "brick_oven",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.5,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 21,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          384,
+          160,
+          192
+        ]
+      }
+    },
+    "boxing_bench_se": {
+      "file": "sprites/kitchen/boxing_bench_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        48,
+        107,
+        64,
+        53
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "boxing_bench",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 16,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          576,
+          160,
+          192
+        ]
+      }
+    },
+    "boxing_bench_sw": {
+      "file": "sprites/kitchen/boxing_bench_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        48,
+        107,
+        64,
+        53
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "boxing_bench",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 16,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          576,
+          160,
+          192
+        ]
+      }
+    },
+    "boxing_bench_ne": {
+      "file": "sprites/kitchen/boxing_bench_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        48,
+        107,
+        64,
+        53
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "boxing_bench",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 16,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          576,
+          160,
+          192
+        ]
+      }
+    },
+    "boxing_bench_nw": {
+      "file": "sprites/kitchen/boxing_bench_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        48,
+        107,
+        64,
+        53
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "boxing_bench",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 16,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          576,
+          160,
+          192
+        ]
+      }
+    },
+    "wash_sink_se": {
+      "file": "sprites/kitchen/wash_sink_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        54,
+        93,
+        53,
+        64
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "wash_sink",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 13,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          768,
+          160,
+          192
+        ]
+      }
+    },
+    "wash_sink_sw": {
+      "file": "sprites/kitchen/wash_sink_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        53,
+        94,
+        54,
+        64
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "wash_sink",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          768,
+          160,
+          192
+        ]
+      }
+    },
+    "wash_sink_ne": {
+      "file": "sprites/kitchen/wash_sink_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        53,
+        98,
+        54,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "wash_sink",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          768,
+          160,
+          192
+        ]
+      }
+    },
+    "wash_sink_nw": {
+      "file": "sprites/kitchen/wash_sink_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        53,
+        98,
+        54,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "wash_sink",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          768,
+          160,
+          192
+        ]
+      }
+    },
+    "stand_mixer_se": {
+      "file": "sprites/kitchen/stand_mixer_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        70,
+        123,
+        21,
+        26
+      ],
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "object": "stand_mixer",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        0.75,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 5,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          960,
+          160,
+          192
+        ]
+      }
+    },
+    "stand_mixer_sw": {
+      "file": "sprites/kitchen/stand_mixer_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        70,
+        123,
+        21,
+        26
+      ],
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "object": "stand_mixer",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        0.75
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 5,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          960,
+          160,
+          192
+        ]
+      }
+    },
+    "stand_mixer_ne": {
+      "file": "sprites/kitchen/stand_mixer_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        70,
+        122,
+        21,
+        27
+      ],
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "object": "stand_mixer",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -0.75
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 5,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          960,
+          160,
+          192
+        ]
+      }
+    },
+    "stand_mixer_nw": {
+      "file": "sprites/kitchen/stand_mixer_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        70,
+        122,
+        21,
+        27
+      ],
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "object": "stand_mixer",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -0.75,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 5,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          960,
+          160,
+          192
+        ]
+      }
+    },
+    "vent_hood_se": {
+      "file": "sprites/kitchen/vent_hood_se.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        52,
+        98,
+        57,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "vent_hood",
+      "direction": "se",
+      "front_normal": [
+        1,
+        0
+      ],
+      "suggested_approach_offset": [
+        1.0,
+        0.0
+      ],
+      "source_cell": 0,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          0,
+          1152,
+          160,
+          192
+        ]
+      }
+    },
+    "vent_hood_sw": {
+      "file": "sprites/kitchen/vent_hood_sw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        52,
+        98,
+        57,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "vent_hood",
+      "direction": "sw",
+      "front_normal": [
+        0,
+        1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        1.0
+      ],
+      "source_cell": 1,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          160,
+          1152,
+          160,
+          192
+        ]
+      }
+    },
+    "vent_hood_ne": {
+      "file": "sprites/kitchen/vent_hood_ne.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        52,
+        98,
+        57,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "vent_hood",
+      "direction": "ne",
+      "front_normal": [
+        0,
+        -1
+      ],
+      "suggested_approach_offset": [
+        0.0,
+        -1.0
+      ],
+      "source_cell": 2,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          320,
+          1152,
+          160,
+          192
+        ]
+      }
+    },
+    "vent_hood_nw": {
+      "file": "sprites/kitchen/vent_hood_nw.png",
+      "size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "category": "kitchen",
+      "bounds": [
+        52,
+        98,
+        57,
+        60
+      ],
+      "footprint": [
+        1,
+        1
+      ],
+      "object": "vent_hood",
+      "direction": "nw",
+      "front_normal": [
+        -1,
+        0
+      ],
+      "suggested_approach_offset": [
+        -1.0,
+        0.0
+      ],
+      "source_cell": 3,
+      "mirrored": false,
+      "anchor_kind": "projected ground center",
+      "ground_front_offset_px": 14,
+      "atlas": {
+        "file": "atlases/kitchen.png",
+        "rect": [
+          480,
+          1152,
+          160,
+          192
+        ]
+      }
     }
   },
   "objects": {
@@ -426,6 +1506,174 @@
       "source": "source/prep_bench.png",
       "prompt": "prompts/prep_bench.txt",
       "source_sha256": "b608d0b2860c136f9e83766d430679f7caa5d4c0447ee555d1a08352084c31a8"
+    },
+    "topping_station": {
+      "category": "kitchen",
+      "description": "Stainless refrigerated topping station with six inset colored ingredient trays, low glass sneeze guard, two refrigerated FRONT doors, plain ventilated BACK panel.",
+      "variants": {
+        "sw": "topping_station_sw",
+        "se": "topping_station_se",
+        "ne": "topping_station_ne",
+        "nw": "topping_station_nw"
+      },
+      "turnaround": "turnarounds/topping_station.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/topping_station.png",
+      "prompt": "prompts/topping_station.txt",
+      "source_sha256": "8aa2e4980fcfee8ceeb62dcd72c206316db4976208933d72f42c9c614c0ff4d0"
+    },
+    "brick_oven": {
+      "category": "kitchen",
+      "description": "Terracotta brick dome pizza oven on square brick base, cream arched FRONT mouth with small glowing fire, wood-storage niche below, short chimney; BACK continuous brick dome/base with no openings.",
+      "variants": {
+        "se": "brick_oven_se",
+        "sw": "brick_oven_sw",
+        "ne": "brick_oven_ne",
+        "nw": "brick_oven_nw"
+      },
+      "turnaround": "turnarounds/brick_oven.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/brick_oven.png",
+      "prompt": "prompts/brick_oven.txt",
+      "source_sha256": "445abf13aa095241d476f3e34c0436d7382c048cd345d1909e7f40ba7d434fdf"
+    },
+    "boxing_bench": {
+      "category": "kitchen",
+      "description": "Walnut cutting-and-boxing bench with butcher-block top, a recessed cutting board on top, open FRONT cubbies holding flat cream pizza boxes, plain walnut BACK.",
+      "variants": {
+        "se": "boxing_bench_se",
+        "sw": "boxing_bench_sw",
+        "ne": "boxing_bench_ne",
+        "nw": "boxing_bench_nw"
+      },
+      "turnaround": "turnarounds/boxing_bench.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/boxing_bench.png",
+      "prompt": "prompts/boxing_bench.txt",
+      "source_sha256": "a561c1b508f18976da56b286f7f806d11ad8e8eb177830ac2a591d7a86c6b759"
+    },
+    "wash_sink": {
+      "category": "kitchen",
+      "description": "Compact stainless sink cabinet, one deep basin and arched faucet on rear rim, two FRONT cupboard doors, solid BACK; empty basin, no loose props.",
+      "variants": {
+        "se": "wash_sink_se",
+        "sw": "wash_sink_sw",
+        "ne": "wash_sink_ne",
+        "nw": "wash_sink_nw"
+      },
+      "turnaround": "turnarounds/wash_sink.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/wash_sink.png",
+      "prompt": "prompts/wash_sink.txt",
+      "source_sha256": "887c54a4e2bbffc783196bb07ed05ed7399121aa2bda3366a9dc3af58ef421d6"
+    },
+    "stand_mixer": {
+      "category": "kitchen",
+      "description": "Small cream countertop stand mixer with steel bowl and walnut control knob; four actual rotational views, rear motor housing distinguishable from bowl-front. Standalone appliance, no table.",
+      "variants": {
+        "se": "stand_mixer_se",
+        "sw": "stand_mixer_sw",
+        "ne": "stand_mixer_ne",
+        "nw": "stand_mixer_nw"
+      },
+      "turnaround": "turnarounds/stand_mixer.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/stand_mixer.png",
+      "prompt": "prompts/stand_mixer.txt",
+      "source_sha256": "cc1be79be8f129360ec61dd21b967b28a2a3ec3f8323a12279ba9dd01157648f"
+    },
+    "vent_hood": {
+      "category": "kitchen",
+      "description": "Stainless trapezoid pizza oven extraction hood with short upright exhaust flue, open dark lower intake, small FRONT controls and plain BACK. Isolated wall/ceiling fixture, no wall or oven.",
+      "variants": {
+        "se": "vent_hood_se",
+        "sw": "vent_hood_sw",
+        "ne": "vent_hood_ne",
+        "nw": "vent_hood_nw"
+      },
+      "turnaround": "turnarounds/vent_hood.png",
+      "direction_order": [
+        "se",
+        "sw",
+        "ne",
+        "nw"
+      ],
+      "frame_size": [
+        160,
+        192
+      ],
+      "anchor": [
+        80,
+        144
+      ],
+      "source": "source/vent_hood.png",
+      "prompt": "prompts/vent_hood.txt",
+      "source_sha256": "5e115613f7c3d3edeb007b5e95cfc0393f2cad6afba6e1b31e10e6f21cc26b32"
     }
   },
   "animations": {},
@@ -436,12 +1684,6 @@
     "nw"
   ],
   "missing_sources": [
-    "topping_station",
-    "brick_oven",
-    "boxing_bench",
-    "wash_sink",
-    "stand_mixer",
-    "vent_hood",
     "pickup_cubby",
     "drinks_fridge",
     "waiting_bench",

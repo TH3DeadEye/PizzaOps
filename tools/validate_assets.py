@@ -58,16 +58,19 @@ def validate(root=ROOT):
             distinct.add(frame_bytes)
             assert frame_bytes == pygame.image.tobytes(strip.subsurface((index * width, 0, width, height)), "RGBA"), name
         assert len(distinct) >= 2, f"Animation has no visible change: {name}"
-    scene = json.loads((root / "scene.json").read_text())
-    for obj in scene["floors"] + scene["objects"]:
-        assert obj["sprite"] in images
-        assert all(0 <= value < bound for value, bound in zip(obj["position"], scene["size"], strict=True))
-        if obj.get("animation"):
-            assert obj["animation"] in manifest["animations"]
-    for actor in scene["characters"]:
-        assert f"{actor['character']}/{actor['action']}/{actor['direction']}" in manifest["animations"]
+    scene_paths = [root / "scene.json", *sorted((root / "rooms").glob("*.json"))]
+    for path in scene_paths:
+        scene = json.loads(path.read_text())
+        for obj in scene["floors"] + scene["objects"]:
+            assert obj["sprite"] in images, (path.name, obj["sprite"])
+            assert all(0 <= value < bound for value, bound in zip(obj["position"], scene["size"], strict=True))
+            if obj.get("animation"):
+                assert obj["animation"] in manifest["animations"]
+        for actor in scene["characters"]:
+            assert f"{actor['character']}/{actor['action']}/{actor['direction']}" in manifest["animations"]
     report = {"status": "passed", "sprites": len(images), "animations": len(strips), "atlases": len(atlases),
               "categories": dict(Counter(entry["category"] for entry in manifest["sprites"].values())),
+              "scenes": len(scene_paths),
               "checks": ["RGBA binary alpha", "individual PNG inventory", "dimensions", "anchors and feet registration",
                          "character clipping", "frame duration counts", "visible animation changes", "atlas pixel equality",
                          "strip pixel equality", "scene references and bounds"]}

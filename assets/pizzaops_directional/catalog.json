@@ -55,7 +55,13 @@
         1,
         1
       ],
-      "description": "Stainless refrigerated topping station with six inset colored ingredient trays, low glass sneeze guard, two refrigerated FRONT doors, plain ventilated BACK panel."
+      "description": "Stainless refrigerated topping station with six inset colored ingredient trays, low glass sneeze guard, two refrigerated FRONT doors, plain ventilated BACK panel.",
+      "source_order": [
+        "sw",
+        "se",
+        "ne",
+        "nw"
+      ]
     },
     {
       "id": "brick_oven",
