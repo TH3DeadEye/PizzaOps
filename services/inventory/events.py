@@ -29,6 +29,7 @@ class RejectedPayload(Model):
     code: str
     items: dict[str, int]
     stock_version: int
+    missing: dict[str, int] = Field(default_factory=dict)  # shortfall per ingredient; empty unless INSUFFICIENT_STOCK
 
 
 class RestockedPayload(Model):

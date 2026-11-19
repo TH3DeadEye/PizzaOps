@@ -84,7 +84,8 @@ class InventoryStore:
                         "source": "AUTHORITATIVE"})
             except InventoryError as error:
                 self._journal.append(RejectedEvent, trace_id, request.order_id, self._version,
-                                     RejectedPayload(code=error.code, items=request.items.copy(), stock_version=self._version),
+                                     RejectedPayload(code=error.code, items=request.items.copy(), stock_version=self._version,
+                                                     missing=dict(error.details.get("missing", {}))),
                                      request.order_id)
                 raise
             reservation = Reservation(reservation_id=uuid4(), order_id=request.order_id, items=request.items.copy(),
