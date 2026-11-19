@@ -293,8 +293,7 @@ class World:
     def _words(self, order):
         order = order or {}
         customer = order.get("customer") or {}
-        return {"pizza": order.get("pizzaType"), "quantity": order.get("quantity"), "short_order": short(order.get("orderId")),
-                "name": customer.get("appearance", "customer_").replace("customer_", "").title() or None}
+        return {"pizza": order.get("pizzaType"), "quantity": order.get("quantity"), "name": dialogue.customer_name(customer)}
 
     def _react_order(self, kind, payload, order_id, seed, now):
         cashier = self.actors["cashier"]

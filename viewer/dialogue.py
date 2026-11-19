@@ -92,7 +92,7 @@ STOCK_WORKER = {
         "AUTHORITATIVE": ["Counted it just now.", "Fresh numbers, straight off the shelf.", "Here's the real count."],
         "CACHED": ["Here's the sheet. From... earlier.", "Numbers from the clipboard. Should be fine.", "I counted recently. Recently-ish.", "Probably still accurate."],
     },
-    "RESERVATION_SUCCEEDED": ["Set aside for order {short_order}.", "Reserved. Off the shelf it goes.", "Got it. Marking it down.", "Taken off the shelf, as asked."],
+    "RESERVATION_SUCCEEDED": ["Set aside for {name}'s {pizza}.", "Reserved. Off the shelf it goes.", "Got it. Marking it down.", "Taken off the shelf, as asked."],
     "RESERVATION_REJECTED": ["Can't. We're short on {missing}.", "Not enough {missing}. Sorry.", "The shelf says no {missing}.", "Nope. {missing} ran out."],
     "STOCK_RESTOCKED": ["Delivery! Shelves are fuller.", "Restocked. Happy now?", "Fresh crates in the back.", "More {ingredient}, as requested."],
     "FAULT_CONFIG_CHANGED": {
@@ -154,6 +154,18 @@ CUSTOMER = {
 }
 
 
+NAMES = ("Sam", "Alex", "Robin", "Kai", "Noor", "Rafi", "Jo", "Rowan", "Sasha", "Remy", "Ari", "Max",
+         "Charlie", "Jules", "Pat", "Toni", "Nico", "Dani", "Kim", "Lou", "Mika", "Ash", "Billie", "Frankie")
+
+
+def customer_name(customer):
+    """A friendly first name for a customer record, stable for its ID, so live and replay agree."""
+    if not customer:
+        return None
+    key = customer.get("id") or customer.get("appearance")
+    return random.Random(str(key)).choice(NAMES) if key else None
+
+
 class _Forgiving(dict):
     def __missing__(self, key):
         return "..."
@@ -213,7 +225,8 @@ def stock_worker_line(event_type, payload, seed, **values):
         else:
             table = table["clear"]
     elif event_type == "RESERVATION_REJECTED":
-        values["missing"] = first_name(payload.get("items"))
+        # ``missing`` is the real shortfall; older recordings only carry the requested ``items``.
+        values["missing"] = first_name(payload.get("missing") or payload.get("items"))
     elif event_type == "STOCK_RESTOCKED":
         values["ingredient"] = first_name(payload.get("added"))
     text = pick(table, seed)
