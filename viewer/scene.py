@@ -25,19 +25,27 @@ class SceneView:
         self.origin = (self.viewport.centerx - bounds.centerx * self.scale,
                        self.viewport.centery - bounds.centery * self.scale)
         self.oven = Animator(pack, "oven/lit")
+        self._grey = {}
         self.label_font = pygame.font.Font(None, 17)
 
     def point(self, position, elevation=0):
         x, y = project(position, elevation=elevation)
         return self.origin[0] + x * self.scale, self.origin[1] + y * self.scale
 
-    def sprite(self, target, sprite, position, elevation=0, alpha=1.0):
-        if alpha >= 1.0:
+    def sprite(self, target, sprite, position, elevation=0, alpha=1.0, grey=False):
+        if alpha >= 1.0 and not grey:
             return self.pack.draw(target, sprite, self.point(position, elevation), self.scale)
         if alpha <= 0.0:
             return None
-        image = self.pack.image(sprite, self.scale).copy()
-        image.set_alpha(round(255 * alpha))
+        image = self.pack.image(sprite, self.scale)
+        if grey:  # a character whose service is offline
+            key = (sprite, self.scale)
+            if key not in self._grey:
+                self._grey[key] = pygame.transform.grayscale(image)
+            image = self._grey[key]
+        if alpha < 1.0:
+            image = image.copy()
+            image.set_alpha(round(255 * alpha))
         anchor = self.pack.sprites[sprite]["anchor"]
         x, y = self.point(position, elevation)
         return target.blit(image, (round(x - anchor[0] * self.scale), round(y - anchor[1] * self.scale)))
@@ -61,7 +69,7 @@ class SceneView:
             else:
                 sprite = obj["sprite"]
             alpha = obj.get("alpha", 1.0)
-            self.sprite(target, sprite, obj["position"], obj.get("elevation", 0), alpha)
+            self.sprite(target, sprite, obj["position"], obj.get("elevation", 0), alpha, obj.get("grey", False))
             if obj.get("carrying"):
                 self.sprite(target, obj["carrying"], obj["position"], 18, alpha)
         if labels:

@@ -54,6 +54,19 @@ class Show:
             closer()
 
 
+def set_icon(pygame):
+    """A pepperoni pizza as the window icon (loaded without convert: no display mode exists yet)."""
+    try:
+        pack = AssetPack(DEFAULT_ASSET_ROOT)
+        entry = pack.sprites["pizza_pepperoni"]
+        pizza = pygame.image.load(pack.root / entry["file"]).subsurface(entry["bounds"])
+        icon = pygame.Surface((32, 32), pygame.SRCALPHA)
+        icon.blit(pizza, pizza.get_rect(center=(16, 16)))
+        pygame.display.set_icon(icon)
+    except (pygame.error, OSError, KeyError):
+        pass
+
+
 def loop(show, *, mode, headless, frames, screenshot, scale):
     import pygame
     if headless:
@@ -63,8 +76,9 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
     if not headless:
         desktop = pygame.display.get_desktop_sizes()[0]
         scale = max(1, min(scale, desktop[0] // SIZE[0], (desktop[1] - 80) // SIZE[1]))
+    set_icon(pygame)
     window = pygame.display.set_mode((SIZE[0] * scale, SIZE[1] * scale))
-    pygame.display.set_caption(f"PizzaOps - {mode}")
+    pygame.display.set_caption("Little Slice · PizzaOps" + ("" if mode == "live" else f" ({mode})"))
     canvas = pygame.Surface(SIZE)
     clock = pygame.time.Clock()
     running, frame_count = True, 0
@@ -80,6 +94,8 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
                         running = False
                     elif event.key == pygame.K_SPACE:
                         show.paused = not show.paused
+                    elif event.key == pygame.K_F1:
+                        show.renderer.debug = not show.renderer.debug
                     elif event.key in (pygame.K_EQUALS, pygame.K_PLUS):
                         show.speed = min(8.0, show.speed * 2 if show.speed >= 1 else show.speed * 2)
                         show.speed = 1.0 if 0.9 < show.speed < 1.1 else show.speed
