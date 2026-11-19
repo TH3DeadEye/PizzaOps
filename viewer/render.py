@@ -12,6 +12,7 @@ import pygame
 from viewer import ui
 from viewer.assets import Animator
 from viewer.camera import Camera
+from viewer.fx import Effects
 from viewer.dialogue import customer_name, first_name
 from viewer.scene import SIZE, SceneView
 from viewer.updates import SERVICES
@@ -74,6 +75,8 @@ class Renderer:
         self.kit = ui.Kit(pack, self.fonts)
         self.view.label_font, self.view.label_antialias = self.fonts.font("bold"), not self.fonts.pixel
         self.camera = Camera(STAGE, self.view.bounds, self.view.fit_scale)
+        self.fx = Effects(pack, self.view, self.kit, self.scene)
+        self.on_cue = None  # called with (name, screen x) for every stage cue, e.g. to play a sound
         self.oven = self.view.oven
         self.animators = {}
         self.debug = False
@@ -104,6 +107,11 @@ class Renderer:
             animator.update(dt_ms, rate)
         self.animators = {key: animator for key, animator in self.animators.items() if key in living}
         self._time_cooking(world)
+        for name, position, _ in world.stage.take_cues():
+            self.fx.cue(name, position)
+            if self.on_cue is not None:
+                self.on_cue(name, self.view.point(position)[0])
+        self.fx.update(dt_ms / 1000, world, self._oven_lit(world))
 
     def _time_cooking(self, world):
         """Learn how long a bake takes from what the kitchen reports, for the tickets' progress bars."""
@@ -133,12 +141,19 @@ class Renderer:
         if self.debug:
             self._debug(target, world)
 
+    @staticmethod
+    def _oven_lit(world):
+        return any(job["status"] == "COOKING" for job in world.jobs.values())
+
     def _offline(self, world, actor):
         service = STAFF_SERVICE.get(actor.character)
         return service is not None and world.services[service].state in ("DISCONNECTED", "RUN_MISMATCH")
 
     def _scene(self, target, world):
-        self.view.set_camera(self.camera.origin, self.camera.zoom)
+        shake = self.fx.offset()
+        origin = self.camera.origin
+        self.view.set_camera((origin[0] + shake[0], origin[1] + shake[1]), self.camera.zoom)
+        oven_lit = self._oven_lit(world)
         records = []
         for actor in world.everyone():
             if actor.gone:
@@ -150,8 +165,12 @@ class Renderer:
         for prop in world.stage.props.values():
             records.append({"position": prop.position, "sprite": prop.sprite, "elevation": prop.elevation,
                             "depth_bias": prop.depth_bias, "alpha": prop.alpha})
-        self.view.draw(target, records, oven_lit=any(job["status"] == "COOKING" for job in world.jobs.values()),
-                       labels=self.camera.zoom == self.camera.min_zoom)
+        self.view.draw(target, records, oven_lit=oven_lit, labels=self.camera.zoom == self.camera.min_zoom,
+                       underlay=self.fx.underlay(world, oven_lit))
+        clip = target.get_clip()
+        target.set_clip(STAGE)
+        self.fx.overlay(target, world, oven_lit)
+        target.set_clip(clip)
         for actor in world.everyone():
             if actor.gone or actor.alpha < 0.5:
                 continue

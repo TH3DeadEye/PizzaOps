@@ -104,6 +104,8 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
                         show.renderer.camera.toggle_zoom(canvas_point(pygame.mouse.get_pos(), scale))
                     elif event.key == pygame.K_c:
                         show.renderer.camera.recenter()
+                    elif event.key == pygame.K_l:
+                        show.renderer.fx.lighting = not show.renderer.fx.lighting
                     elif event.key in (pygame.K_EQUALS, pygame.K_PLUS):
                         show.speed = min(8.0, show.speed * 2 if show.speed >= 1 else show.speed * 2)
                         show.speed = 1.0 if 0.9 < show.speed < 1.1 else show.speed
