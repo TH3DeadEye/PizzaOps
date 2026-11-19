@@ -35,8 +35,11 @@ def test_room_modules_and_composition_have_valid_registered_assets():
 
 def test_destinations_are_reachable_without_crossing_walls_or_furniture():
     world = World()
+    stage = world.stage
     destinations = [world.oven_spot, world.pass_spot, world.crates_spot, world.overflow,
-                    *world.wait_slots, *world.table_seats, *(point for point, _ in world.homes.values())]
+                    *world.wait_slots, *world.table_seats, *(point for point, _ in world.homes.values()),
+                    stage.prep_spot, stage.shelf_spot, *stage.pickup_spots, *stage.standoff.values()]
+    assert stage.pass_counter in world.layout.blocked  # boxes rest on the counter; nobody walks there
     for goal in destinations:
         path = [world.entrance, *world.layout.route(world.entrance, goal)]
         assert path[-1] == goal

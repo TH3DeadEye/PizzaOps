@@ -102,6 +102,9 @@ STOCK_WORKER = {
         "clear": ["Fine, FINE, I'll count properly.", "Back to normal. Real counts.", "Shelf's in order again."],
     },
     "SERVICE_STARTED": ["Storeroom's open.", "Morning. Crates are where I left them.", "Back room's ready."],
+    # Caught out by the chef at the stockroom door (a stale-stock contradiction).
+    "STANDOFF": ["The sheet said plenty! It's... an older sheet.", "I counted. Earlier. Ish.",
+                 "Those were this morning's numbers.", "Okay, okay. I'll count for real."],
 }
 
 CASHIER = {

@@ -18,6 +18,7 @@ WARN = "#d4a574"
 PANEL = "#24272c"
 MOOD_ICON = {"CALM": "ui_mood_calm", "TENSE": "ui_mood_busy", "SUSPICIOUS": "ui_mood_stressed", "FURIOUS": "ui_warning"}
 STATUS_COLOR = {"LIVE": GOOD, "SYNCING": WARN, "DISCONNECTED": BAD, "RUN_MISMATCH": BAD}
+EMOTE_ICON = {"warning": "ui_warning", "angry": "ui_mood_stressed", "unknown": "ui_mood_busy"}
 
 
 def wrap(text, width=28):
@@ -64,7 +65,9 @@ class Renderer:
                 animator = Animator(self.pack, clip)
                 self.animators[id(actor)] = animator
             animator.play(clip)
-            animator.update(dt_ms)
+            # A hurrying character's legs keep pace with its feet.
+            rate = actor.walk_speed * actor.rate / 1.6 if actor.moving else 1.0
+            animator.update(dt_ms, rate)
         self.animators = {key: animator for key, animator in self.animators.items() if key in living}
 
     def draw(self, target, world, *, mode, paused, speed, caption):
@@ -97,8 +100,14 @@ class Renderer:
             animator = self.animators.get(id(actor))
             actors.append({"position": actor.position,
                            "sprite": animator.frame_id if animator else f"{actor.character}_idle_se_00",
-                           "carrying": actor.carrying if actor.action != "carry" else None})
+                           "carrying": actor.carrying if actor.action != "carry" else None, "alpha": actor.alpha})
+        for prop in world.stage.props.values():
+            actors.append({"position": prop.position, "sprite": prop.sprite, "elevation": prop.elevation,
+                           "depth_bias": prop.depth_bias, "alpha": prop.alpha})
         self.view.draw(target, actors, oven_lit=any(j["status"] == "COOKING" for j in world.jobs.values()))
+        for actor in world.everyone():
+            if not actor.gone and actor.emote and actor.alpha > 0.5:
+                self.pack.draw(target, EMOTE_ICON.get(actor.emote, "ui_warning"), self.view.point(actor.position, 74))
         for actor in world.everyone():
             if not actor.gone and actor.speech:
                 self._bubble(target, self.view.point(actor.position), actor.speech)
