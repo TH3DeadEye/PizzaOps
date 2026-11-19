@@ -12,6 +12,7 @@ Pure Python: no pygame, no network. Three rules keep the picture honest:
 from collections import deque
 from dataclasses import dataclass
 
+from viewer import narration
 from viewer.layout import Layout
 from viewer.stage import Actor, Stage  # noqa: F401  (Actor stays importable from here)
 from viewer.updates import Event, Resync, SERVICES, Snapshot, Status
@@ -51,6 +52,7 @@ class World:
         self.services = {name: ServiceView() for name in SERVICES}
         self.seen = {name: set() for name in SERVICES}
         self.ticker = deque(maxlen=14)
+        self.story = deque(maxlen=12)  # (time, narration.Story), newest last
         self.resyncs = 0
 
     # ------------------------------------------------------------------ the cast (owned by the stage)
@@ -122,10 +124,12 @@ class World:
             view = self.services[update.service]
             if (view.state, view.detail) != (update.state, update.detail):
                 self._note(update.service, update.state, update.detail)
+                self._tell(narration.status_story(update.service, update.state, view.state))
             view.state, view.detail = update.state, update.detail
         elif isinstance(update, Resync):
             self.resyncs += 1
             self._note("feed", "RESYNC", "updates were dropped; taking fresh snapshots")
+            self._tell(narration.Story("Missed some updates; catching up", "ui_warning", "warn"))
         elif isinstance(update, Snapshot):
             self._apply_snapshot(update.service, update.data)
         elif isinstance(update, Event):
@@ -175,7 +179,9 @@ class World:
             self.seen[service] = {item for item in self.seen[service] if item[1] > event["sequence"] - MAX_SEEN // 2}
         self.seen[service].add(key)
         view.last_sequence = max(view.last_sequence, event["sequence"])
+        story = narration.narrate(service, event, self)  # before projecting, so changes compare with the old state
         self._project(service, event)
+        self._tell(story)
         self.stage.react(service, event, self)
         self._ticker(service, event)
         return True
@@ -238,6 +244,13 @@ class World:
         self.stage.tick(dt, self.time, self)
 
     # ------------------------------------------------------------------ ticker
+
+    def _tell(self, story):
+        if story is None:
+            return
+        if any(told.text == story.text and self.time - when < 10 for when, told in self.story):
+            return  # an outage repeats itself; say it once
+        self.story.append((self.time, story))
 
     def _note(self, source, kind, detail=None):
         self.ticker.append({"time": self.time, "service": source, "type": kind, "detail": detail or "", "orderId": None})
