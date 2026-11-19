@@ -6,6 +6,7 @@ them: a FAILED order gets an apology, never a cheerful "order up".
 """
 
 import random
+import re
 
 MOODS = ("CALM", "TENSE", "SUSPICIOUS", "FURIOUS")
 TRAITS = ("patient", "impatient", "chatty")
@@ -169,6 +170,9 @@ def customer_name(customer):
     return random.Random(str(key)).choice(NAMES) if key else None
 
 
+SENTENCE_START = re.compile(r"(^|[.!?]\s+)([a-z])")
+
+
 class _Forgiving(dict):
     def __missing__(self, key):
         return "..."
@@ -190,7 +194,8 @@ def fill(text, **values):
              "name": "you", "short_order": "????"}
     words.update({key: value for key, value in values.items() if value is not None})
     words["pizza"] = str(words["pizza"]).lower()
-    return text.format_map(_Forgiving(words))
+    # "{pizza}, 2 of them." must still read as a sentence: "Pepperoni, 2 of them."
+    return SENTENCE_START.sub(lambda match: match.group(1) + match.group(2).upper(), text.format_map(_Forgiving(words)))
 
 
 def chef_line(event_type, payload, mood, seed, **values):
@@ -219,12 +224,13 @@ def stock_worker_line(event_type, payload, seed, **values):
         table = table.get(payload.get("source"), table["AUTHORITATIVE"])
     elif event_type == "FAULT_CONFIG_CHANGED":
         faults = payload.get("faults") or {}
-        if faults.get("staleStockEnabled"):
-            table = table["stale"]
-        elif faults.get("failureMode") not in (None, "NONE"):
+        # The most disruptive condition is the news: closed, then slow, then counting from an old sheet.
+        if faults.get("failureMode") not in (None, "NONE"):
             table = table["failing"]
         elif faults.get("delayMs"):
             table = table["slow"]
+        elif faults.get("staleStockEnabled"):
+            table = table["stale"]
         else:
             table = table["clear"]
     elif event_type == "RESERVATION_REJECTED":
