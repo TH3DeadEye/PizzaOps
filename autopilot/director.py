@@ -58,15 +58,20 @@ CALM = Scenario(
 )
 
 FRIDAY = Scenario(
-    "friday", "Friday night: a stale stock sheet, a pepperoni shortage, a rush, a slow storeroom and a short outage.",
-    300, 1 / 16, {"PEPPERONI": 0.45, "CHEESE": 0.35, "MARINARA": 0.20},
+    "friday", "Friday night: a stale stock sheet, a pepperoni shortage, a short outage, a rush and a slow storeroom.",
+    300, 1 / 20, {"PEPPERONI": 0.45, "CHEESE": 0.35, "MARINARA": 0.20},
     (
         walk_in(3, "PEPPERONI", 1, trait="patient"),
         # The stockkeeper starts reading from a sheet frozen now; the pepperoni truck is late.
         faults(45, stale=True), hold(45, "PEPPERONI"),
+        # A short outage while the queue is short, so only a customer or two is turned away.
+        faults(70, stale=True, unavailable=True), faults(76, stale=True),
         # Two parties drain the pepperoni while the frozen sheet still says there is plenty.
         walk_in(90, "PEPPERONI", 6, trait="chatty"),
         walk_in(135, "PEPPERONI", 5, trait="impatient"),
+        # Pepperoni lovers keep coming; each catch costs the sheet some trust until the chef counts for himself.
+        walk_in(145, "PEPPERONI", 1, trait="chatty"), walk_in(158, "PEPPERONI", 2, trait="impatient"),
+        walk_in(171, "PEPPERONI", 1, trait="patient"), walk_in(186, "PEPPERONI", 1, trait="impatient"),
         # Real counting resumes and the truck arrives; a huddle settles the chef.
         faults(200), release(200, "PEPPERONI"), reconcile(210),
         # The cinema lets out: a guaranteed wave of walk-ins on top of a busier random crowd.
@@ -74,9 +79,7 @@ FRIDAY = Scenario(
         walk_in(226, "CHEESE", 1, trait="impatient"), walk_in(228, "MARINARA", 2, trait="chatty"),
         walk_in(231, "PEPPERONI", 1, trait="impatient"), walk_in(235, "CHEESE", 2, trait="patient"),
         # A slow storeroom: replies take longer than the kitchen's 2 s attempt budget.
-        faults(240, delay_ms=2500), faults(265),
-        # A short outage, then recovery.
-        faults(270, unavailable=True), faults(282), reconcile(284),
+        faults(262, delay_ms=2500), faults(280), reconcile(285),
     ),
 )
 
