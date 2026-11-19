@@ -29,9 +29,20 @@ def run_demo(argv):
     demo(argv)
 
 
+class Playback:
+    """A replay's clock: it runs only while the show is unpaused, at the show's speed."""
+
+    def __init__(self):
+        self.seconds = 0.0
+
+    def __call__(self):
+        return self.seconds
+
+
 class Show:
-    def __init__(self, source, *, pack, record_path=None, speed=1.0, caption="LIVE"):
+    def __init__(self, source, *, pack, record_path=None, speed=1.0, caption="LIVE", playback=None):
         self.source = source
+        self.playback = playback
         self.world = World(scene=load_scene(pack.root))
         self.renderer = Renderer(pack)
         self.speed = speed
@@ -43,6 +54,8 @@ class Show:
         for update in self.source.drain():
             self.world.apply(update)
         if not self.paused:
+            if self.playback is not None:
+                self.playback.seconds += dt_ms / 1000 * self.speed
             self.world.tick(dt_ms / 1000 * self.speed)
             self.renderer.update(self.world, dt_ms * self.speed)
 
@@ -192,13 +205,14 @@ def main(argv=None):
         UUID(run_id)
         urls = {"order": args.order_url, "kitchen": args.kitchen_url, "inventory": args.inventory_url}
         source = Feed(urls, run_id, record_path=args.record, poll_s=args.poll_s).start()
-        caption = "LIVE"
+        caption, playback = "LIVE", None
     else:
         if args.recording is None:
             parser.error("replay mode needs --recording")
-        source = Replay(args.recording, speed=args.speed)
+        playback = Playback()  # pause and +/- control the recording itself, not just the animation
+        source = Replay(args.recording, now=playback)
         caption = f"REPLAY {args.recording.name}"
-    show = Show(source, pack=pack, speed=args.speed, caption=caption)
+    show = Show(source, pack=pack, speed=args.speed, caption=caption, playback=playback)
     return loop(show, mode=args.mode, headless=args.headless, frames=args.frames, screenshot=args.screenshot, scale=args.scale,
                 audio=not args.no_audio)
 
