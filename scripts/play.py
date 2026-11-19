@@ -67,6 +67,8 @@ def viewer_arguments(launcher, args):
         argv += ["--frames", str(args.frames)]
     if args.screenshot:
         argv += ["--screenshot", str(args.screenshot)]
+    if args.no_audio:
+        argv.append("--no-audio")
     return argv
 
 
@@ -82,6 +84,7 @@ def main(argv=None):
     parser.add_argument("--time-scale", type=float, default=1.0, help="run the autopilot's schedule faster")
     parser.add_argument("--env", action="append", default=[], metavar="KEY=VALUE", help="extra service setting (repeatable)")
     parser.add_argument("--log-dir", type=Path, default=DEFAULT_LOG_DIR)
+    parser.add_argument("--no-audio", action="store_true", help="no music or sound effects")
     parser.add_argument("--headless", action="store_true", help="no window: run --frames frames and exit (tests)")
     parser.add_argument("--frames", type=int, default=0)
     parser.add_argument("--screenshot", type=Path)

@@ -17,6 +17,7 @@ from uuid import UUID
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 
 from viewer.assets import AssetPack, DEFAULT_ASSET_ROOT
+from viewer.audio import Audio
 from viewer.feed import DEFAULT_URLS, Feed, Replay
 from viewer.render import SIZE, Renderer
 from viewer.layout import ROOM_NAMES, load_scene
@@ -71,7 +72,7 @@ def set_icon(pygame):
         pass
 
 
-def loop(show, *, mode, headless, frames, screenshot, scale):
+def loop(show, *, mode, headless, frames, screenshot, scale, audio=True):
     import pygame
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -85,6 +86,8 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
     pygame.display.set_caption("Little Slice · PizzaOps" + ("" if mode == "live" else f" ({mode})"))
     canvas = pygame.Surface(SIZE)
     clock = pygame.time.Clock()
+    sound = Audio(enabled=audio and not headless)
+    show.renderer.on_cue = sound.cue
     running, frame_count = True, 0
     limit = frames or (180 if headless else 0)
     try:
@@ -104,6 +107,8 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
                         show.renderer.camera.toggle_zoom(canvas_point(pygame.mouse.get_pos(), scale))
                     elif event.key == pygame.K_c:
                         show.renderer.camera.recenter()
+                    elif event.key == pygame.K_m:
+                        sound.toggle_mute()
                     elif event.key == pygame.K_l:
                         show.renderer.fx.lighting = not show.renderer.fx.lighting
                     elif event.key in (pygame.K_EQUALS, pygame.K_PLUS):
@@ -121,6 +126,8 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
                    (held[pygame.K_DOWN] or held[pygame.K_s]) - (held[pygame.K_UP] or held[pygame.K_w]))
             show.renderer.camera.update(delta / 1000, pan)  # real time: the camera moves while paused too
             show.pump(delta)
+            sound.update(not show.paused and show.renderer.oven_lit(show.world))
+            show.renderer.sound = sound.state
             show.draw(canvas, mode)
             pygame.transform.scale(canvas, window.get_size(), window)
             pygame.display.flip()
@@ -133,6 +140,7 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
         if screenshot:
             Path(screenshot).parent.mkdir(parents=True, exist_ok=True)
             pygame.image.save(window, screenshot)
+        sound.close()
         show.close()
         pygame.quit()
     print(f"Viewer completed: {frame_count} frames")
@@ -157,6 +165,7 @@ def main(argv=None):
     parser.add_argument("--screenshot", type=Path)
     parser.add_argument("--scale", type=int, choices=(1, 2, 3), default=2)
     parser.add_argument("--poll-s", type=float, default=0.25)
+    parser.add_argument("--no-audio", action="store_true", help="no music or sound effects")
     args, rest = parser.parse_known_args(argv)
     if args.mode == "demo":
         extra = rest[:]
@@ -190,7 +199,8 @@ def main(argv=None):
         source = Replay(args.recording, speed=args.speed)
         caption = f"REPLAY {args.recording.name}"
     show = Show(source, pack=pack, speed=args.speed, caption=caption)
-    return loop(show, mode=args.mode, headless=args.headless, frames=args.frames, screenshot=args.screenshot, scale=args.scale)
+    return loop(show, mode=args.mode, headless=args.headless, frames=args.frames, screenshot=args.screenshot, scale=args.scale,
+                audio=not args.no_audio)
 
 
 if __name__ == "__main__":

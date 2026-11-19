@@ -76,7 +76,8 @@ class Renderer:
         self.view.label_font, self.view.label_antialias = self.fonts.font("bold"), not self.fonts.pixel
         self.camera = Camera(STAGE, self.view.bounds, self.view.fit_scale)
         self.fx = Effects(pack, self.view, self.kit, self.scene)
-        self.on_cue = None  # called with (name, screen x) for every stage cue, e.g. to play a sound
+        self.on_cue = None  # called with (name, screen x, delay) for every stage cue, e.g. to play a sound
+        self.sound = "off"  # shown in the top bar: on, muted or off
         self.oven = self.view.oven
         self.animators = {}
         self.debug = False
@@ -107,11 +108,11 @@ class Renderer:
             animator.update(dt_ms, rate)
         self.animators = {key: animator for key, animator in self.animators.items() if key in living}
         self._time_cooking(world)
-        for name, position, _ in world.stage.take_cues():
+        for name, position, when in world.stage.take_cues():
             self.fx.cue(name, position)
             if self.on_cue is not None:
-                self.on_cue(name, self.view.point(position)[0])
-        self.fx.update(dt_ms / 1000, world, self._oven_lit(world))
+                self.on_cue(name, self.view.point(position)[0], max(0.0, when - world.time))
+        self.fx.update(dt_ms / 1000, world, self.oven_lit(world))
 
     def _time_cooking(self, world):
         """Learn how long a bake takes from what the kitchen reports, for the tickets' progress bars."""
@@ -142,7 +143,7 @@ class Renderer:
             self._debug(target, world)
 
     @staticmethod
-    def _oven_lit(world):
+    def oven_lit(world):
         return any(job["status"] == "COOKING" for job in world.jobs.values())
 
     def _offline(self, world, actor):
@@ -153,7 +154,7 @@ class Renderer:
         shake = self.fx.offset()
         origin = self.camera.origin
         self.view.set_camera((origin[0] + shake[0], origin[1] + shake[1]), self.camera.zoom)
-        oven_lit = self._oven_lit(world)
+        oven_lit = self.oven_lit(world)
         records = []
         for actor in world.everyone():
             if actor.gone:
@@ -435,6 +436,9 @@ class Renderer:
         self.kit.draw_icon(target, "ui_pause" if paused else "ui_play", (SIZE[0] - 66, 21))
         self.text(target, "paused" if paused else f"{speed:g}×", (SIZE[0] - 54, 14), "small", ui.WARN if paused else ui.CREAM)
         self.text(target, "F1", (SIZE[0] - 12, 14), "small", ui.MUTED if not self.debug else ui.CREAM, align="right")
+        if self.sound != "off":
+            self.text(target, "sound" if self.sound == "on" else "muted", (SIZE[0] - 84, 14), "small",
+                      ui.MUTED if self.sound == "on" else ui.WARN, align="right")
 
     # ------------------------------------------------------------------ overlays
 
