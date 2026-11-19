@@ -339,9 +339,17 @@ class Stage:
 
     # ------------------------------------------------------------------ speech and cues
 
-    def say(self, actor, text, now, *, delay=0.0, ttl=IMPORTANT_S):
-        """Queue a line: one speaker says one line at a time, in order, and stale lines are dropped."""
+    def say(self, actor, text, now, *, delay=0.0, ttl=IMPORTANT_S, urgent=False):
+        """Queue a line: one speaker says one line at a time, in order, and stale lines are dropped.
+
+        An ``urgent`` line belongs to a staged moment (setting a box down, an accusation at the door): it replaces
+        whatever small talk the speaker had pending and is said right away.
+        """
         if not text or actor is None or actor.gone:
+            return
+        if urgent:
+            self.lines = [line for line in self.lines if line.actor is not actor]
+            actor.say(text, now)
             return
         start = now + delay
         if actor.speech is not None:
@@ -379,7 +387,7 @@ class Stage:
     def perform(self, actor, step, now):
         kind = step[0]
         if kind == "say":
-            self.say(actor, step[1], now)
+            self.say(actor, step[1], now, urgent=True)
         elif kind == "emote":
             actor.emote, actor.emote_until = step[1], now + step[2]
         elif kind == "cue":
@@ -389,7 +397,7 @@ class Stage:
         elif kind == "take":
             self._take(actor, step[1], now)
         elif kind == "thank":
-            self.say(actor, self.ticket(step[1]).lines.get("customer"), now)
+            self.say(actor, self.ticket(step[1]).lines.get("customer"), now, urgent=True)
 
     def _drop(self, chef, order_id, now):
         ticket = self.ticket(order_id)
@@ -403,7 +411,7 @@ class Stage:
         self.props[order_id] = Prop("pizza_box", (self.pass_counter[0] + dx, self.pass_counter[1] + dy),
                                     self.counter_elevation + lift, order_id, depth_bias=0.03 - dx - dy + 0.001 * on_counter)
         self.cue("bell", self.pass_counter, now)
-        self.say(chef, ticket.lines.get("chef"), now)
+        self.say(chef, ticket.lines.get("chef"), now, urgent=True)
 
     def _take(self, customer, order_id, now):
         ticket = self.ticket(order_id)
@@ -413,7 +421,7 @@ class Stage:
         self.props.pop(order_id, None)
         customer.carrying = "pizza_box"
         self.cue("take", customer.position, now)
-        self.say(self.actors["cashier"], ticket.lines.get("cashier"), now)
+        self.say(self.actors["cashier"], ticket.lines.get("cashier"), now, urgent=True)
 
     # ------------------------------------------------------------------ events
 
