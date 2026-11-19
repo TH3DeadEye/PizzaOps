@@ -54,6 +54,10 @@ class Show:
             closer()
 
 
+def canvas_point(window_point, scale):
+    return window_point[0] // scale, window_point[1] // scale
+
+
 def set_icon(pygame):
     """A pepperoni pizza as the window icon (loaded without convert: no display mode exists yet)."""
     try:
@@ -96,11 +100,24 @@ def loop(show, *, mode, headless, frames, screenshot, scale):
                         show.paused = not show.paused
                     elif event.key == pygame.K_F1:
                         show.renderer.debug = not show.renderer.debug
+                    elif event.key == pygame.K_z:
+                        show.renderer.camera.toggle_zoom(canvas_point(pygame.mouse.get_pos(), scale))
+                    elif event.key == pygame.K_c:
+                        show.renderer.camera.recenter()
                     elif event.key in (pygame.K_EQUALS, pygame.K_PLUS):
                         show.speed = min(8.0, show.speed * 2 if show.speed >= 1 else show.speed * 2)
                         show.speed = 1.0 if 0.9 < show.speed < 1.1 else show.speed
                     elif event.key == pygame.K_MINUS:
                         show.speed = max(0.25, show.speed / 2)
+                elif event.type == pygame.MOUSEWHEEL and event.y:
+                    camera = show.renderer.camera
+                    camera.zoom_at(canvas_point(pygame.mouse.get_pos(), scale), camera.zoom + (1 if event.y > 0 else -1))
+                elif event.type == pygame.MOUSEMOTION and event.buttons[2]:
+                    show.renderer.camera.pan(-event.rel[0] / scale, -event.rel[1] / scale)  # drag the room along
+            held = pygame.key.get_pressed()
+            pan = ((held[pygame.K_RIGHT] or held[pygame.K_d]) - (held[pygame.K_LEFT] or held[pygame.K_a]),
+                   (held[pygame.K_DOWN] or held[pygame.K_s]) - (held[pygame.K_UP] or held[pygame.K_w]))
+            show.renderer.camera.update(delta / 1000, pan)  # real time: the camera moves while paused too
             show.pump(delta)
             show.draw(canvas, mode)
             pygame.transform.scale(canvas, window.get_size(), window)

@@ -11,6 +11,7 @@ import pygame
 
 from viewer import ui
 from viewer.assets import Animator
+from viewer.camera import Camera
 from viewer.dialogue import customer_name, first_name
 from viewer.scene import SIZE, SceneView
 from viewer.updates import SERVICES
@@ -71,6 +72,8 @@ class Renderer:
         self.origin = self.view.origin
         self.fonts = ui.Fonts()
         self.kit = ui.Kit(pack, self.fonts)
+        self.view.label_font, self.view.label_antialias = self.fonts.font("bold"), not self.fonts.pixel
+        self.camera = Camera(STAGE, self.view.bounds, self.view.fit_scale)
         self.oven = self.view.oven
         self.animators = {}
         self.debug = False
@@ -135,6 +138,7 @@ class Renderer:
         return service is not None and world.services[service].state in ("DISCONNECTED", "RUN_MISMATCH")
 
     def _scene(self, target, world):
+        self.view.set_camera(self.camera.origin, self.camera.zoom)
         records = []
         for actor in world.everyone():
             if actor.gone:
@@ -146,7 +150,8 @@ class Renderer:
         for prop in world.stage.props.values():
             records.append({"position": prop.position, "sprite": prop.sprite, "elevation": prop.elevation,
                             "depth_bias": prop.depth_bias, "alpha": prop.alpha})
-        self.view.draw(target, records, oven_lit=any(job["status"] == "COOKING" for job in world.jobs.values()))
+        self.view.draw(target, records, oven_lit=any(job["status"] == "COOKING" for job in world.jobs.values()),
+                       labels=self.camera.zoom == self.camera.min_zoom)
         for actor in world.everyone():
             if actor.gone or actor.alpha < 0.5:
                 continue
