@@ -1,4 +1,27 @@
-# PizzaOps — Cozy Isometric Asset Pack
+# PizzaOps
+
+A cozy isometric pizzeria where every customer, argument and failed order is a real HTTP event between three services.
+
+## Play
+
+```sh
+uv run python scripts/play.py                  # Friday night (seed 7); --scenario calm for an easy evening
+uv run python -m viewer --mode replay --recording assets/game/demo/friday.jsonl   # no services needed
+```
+
+One command starts Order, Kitchen and Inventory with a show profile (10 s bake, one cook, deadlines long enough for a queue), an autopilot that runs the shift, and the viewer. Friday night brings a stale stock sheet, a pepperoni shortage, a short outage, a rush and a slow storeroom. The chef gets fooled by the old sheet until his trust drops below 50 and he counts the shelves himself.
+
+| Key | Does |
+| --- | --- |
+| Mouse wheel / Z | zoom 1× or 2× at the cursor |
+| Arrows, WASD, right-drag | pan; C recenters |
+| Space, + / - | pause, playback speed |
+| M, L | mute, lighting |
+| F1 | debug overlay: raw events, trace IDs, feed cursors |
+
+The stage acts events out and may trail the truth by a few seconds so hand-offs happen in order. The sidebar (chef, pantry, tickets) and the story strip show each result the moment it arrives. Text uses Pixelify Sans (SIL OFL); every sound is synthesised by `tools/build_audio.py`. Record your own shift with `uv run python -m tools.record_demo` and take screenshots of one with `uv run python -m tools.capture_show --at 60,140`.
+
+## The asset pack
 
 Original modular restaurant artwork, individual transparent PNGs, animation strips, metadata, and an offline Pygame showcase. No backend services are required to inspect the pack.
 
